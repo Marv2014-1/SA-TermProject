@@ -48,13 +48,12 @@ class Garage : AppCompatActivity(), GarageAdapter.OnButtonClickListener {
 
     override fun onButtonClick(position: Int, buttonId: Int) {
         if (R.id.garageDeleteCar == buttonId){
-            Log.e("Delete", "Pressed + $position")
             val carId = newArrayList.get(position).id
             Mediator.deleteCar(this, carId)
         }
         else if (R.id.garageEditCar == buttonId){
-            Log.e("Edit", "Pressed + $position")
             val carId = newArrayList.get(position).id
+            Mediator.editCar(this ,carId)
         }
     }
 }

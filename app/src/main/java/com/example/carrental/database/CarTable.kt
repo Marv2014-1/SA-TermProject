@@ -7,6 +7,7 @@ package com.example.carrental.database
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
@@ -108,8 +109,30 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         TODO("Not yet implemented")
     }
 
-    override fun update(t: Car) {
-        TODO("Not yet implemented")
+    override fun update(car: Car) {
+        val database = DbHelper.getInstance(context)
+        val db : SQLiteDatabase = database.writableDatabase
+        val updateQuery = "UPDATE $CAR_TABLE_NAME SET " +
+                        " $CAR_COLUMN_MODEL = \"${car.model}\", " +
+                        " $CAR_COLUMN_YEAR = \"${car.year}\", " +
+                        " $CAR_COLUMN_MILEAGE = \"${car.mileage}\", " +
+                        " $CAR_COLUMN_AVAILABILITY = \"${car.availability}\", " +
+                        " $CAR_COLUMN_LOCATION = \"${car.location}\", " +
+                        " $CAR_COLUMN_PRICE = \"${car.price}\" " +
+                        "WHERE $CAR_COLUMN_ID = \"${car.id}\""
+
+        db.execSQL(updateQuery, arrayOf(
+            car.model,
+            car.year,
+            car.mileage,
+            car.availability,
+            car.location,
+            car.price,
+            car.id
+        ))
+
+        db.close()
+        database.close()
     }
 
     override fun insert(car: Car): Long? {
@@ -142,7 +165,39 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return id
     }
 
+    @SuppressLint("Range")
     override fun getByID(id: Long): Car? {
-        TODO("Not yet implemented")
+        val database = DbHelper.getInstance(context)
+        val selectQuery = "SELECT * FROM $CAR_TABLE_NAME WHERE $CAR_COLUMN_ID = \"$id\""
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        var car : Car? = null
+
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do{
+                    Log.e("Testing", "Start")
+                    val id = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_ID))
+                    val owner = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_OWNER))
+                    val model = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_MODEL))
+                    val year = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_YEAR))
+                    val mileage = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_MILEAGE))
+                    val availability = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_AVAILABILITY))
+                    val location = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_LOCATION))
+                    val price = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_PRICE))
+                    val renter = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_RENTER))
+
+
+                    car = Car(id, owner, model, year, mileage, availability, location, price, renter)
+
+                } while (cursor.moveToNext())
+            }
+        }
+
+        database.close()
+        cursor.close()
+        return car
     }
 }

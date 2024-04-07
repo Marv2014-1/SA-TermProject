@@ -16,7 +16,7 @@ class NewCar : AppCompatActivity() {
         binding = ActivityNewCarBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.newCarAddCar.setOnClickListener(){
+        binding.newCarButton.setOnClickListener(){
             val model = binding.newCarModel.text.toString()
             val year = binding.newCarYear.text.toString()
             val mileage = binding.newCarMileage.text.toString().toInt()
@@ -25,6 +25,10 @@ class NewCar : AppCompatActivity() {
             val price = binding.newCarPrice.text.toString().toInt()
 
             Mediator.addNewCar(this, model, year, mileage, availability, location, price)
+        }
+
+        binding.newCarBack.setOnClickListener(){
+            Mediator.back(this)
         }
     }
 }

@@ -31,7 +31,7 @@ class GarageAdapter(private val carList: ArrayList<Car>, private val listener: O
         holder.year.text = currentItem.year
         holder.mileage.text = currentItem.mileage.toString()
         holder.price.text = currentItem.price.toString()
-        holder.location.text = currentItem.location.toString()
+        holder.location.text = currentItem.location
         holder.duration.text = currentItem.availability
     }
 

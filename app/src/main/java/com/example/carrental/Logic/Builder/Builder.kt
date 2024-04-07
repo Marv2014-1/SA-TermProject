@@ -1,6 +1,7 @@
 package com.example.carrental.Logic.Builder
 
 interface Builder {
+    fun setId(id : Long)
     fun setOwner(owner : Long)
     fun setModel(model : String)
     fun setYear(year : String)

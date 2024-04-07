@@ -22,7 +22,7 @@ class User {
         Q1 = ""
         Q2 = ""
         Q3 = ""
-        balance = 1000
+        balance = 0
     }
 
     constructor(username : String, password: String, Q1 : String, Q2 : String, Q3 : String, balance : Long){
