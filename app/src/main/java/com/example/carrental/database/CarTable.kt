@@ -121,15 +121,17 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
                         " $CAR_COLUMN_PRICE = \"${car.price}\" " +
                         "WHERE $CAR_COLUMN_ID = \"${car.id}\""
 
-        db.execSQL(updateQuery, arrayOf(
-            car.model,
-            car.year,
-            car.mileage,
-            car.availability,
-            car.location,
-            car.price,
-            car.id
-        ))
+        db.execSQL(updateQuery)
+
+//        db.execSQL(updateQuery, arrayOf(
+//            car.model,
+//            car.year,
+//            car.mileage,
+//            car.availability,
+//            car.location,
+//            car.price,
+//            car.id
+//        ))
 
         db.close()
         database.close()

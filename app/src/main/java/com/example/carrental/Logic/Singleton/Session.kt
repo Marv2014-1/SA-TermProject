@@ -4,7 +4,7 @@ import com.example.carrental.database.model.User
 
 class Session private constructor(){
 
-    private lateinit var user : User
+    private var user : User = User()
 
     companion object{
         private var session : Session? = null
