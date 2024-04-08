@@ -9,6 +9,7 @@ import com.example.carrental.database.RentalTable
 import com.example.carrental.database.UserTable
 import com.example.carrental.database.model.Car
 import com.example.carrental.database.model.Rental
+import java.time.LocalDate
 import java.time.LocalTime
 
 class PaymentServiceConcrete(private val context: Context) : PaymentService {
@@ -33,7 +34,7 @@ class PaymentServiceConcrete(private val context: Context) : PaymentService {
 
         val rentalTable = RentalTable(context)
         val rental = Rental()
-        rental.date = LocalTime.now().toString()
+        rental.date = LocalDate.now().toString() + " " + LocalTime.now().hour + ":" + LocalTime.now().minute
         rental.year = car.year
         rental.mileage = car.mileage
         rental.model = car.model

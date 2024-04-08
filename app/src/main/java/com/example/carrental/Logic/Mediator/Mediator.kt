@@ -14,6 +14,7 @@ import com.example.carrental.Logic.proxy.PaymentService
 import com.example.carrental.Logic.proxy.PaymentServiceConcrete
 import com.example.carrental.UI.ForgotPassword
 import com.example.carrental.UI.Garage
+import com.example.carrental.UI.History
 import com.example.carrental.UI.MainActivity
 import com.example.carrental.UI.Menu
 import com.example.carrental.UI.NewCar
@@ -21,9 +22,11 @@ import com.example.carrental.UI.NewPassword
 import com.example.carrental.UI.NewUser
 import com.example.carrental.UI.UpdateCar
 import com.example.carrental.database.CarTable
+import com.example.carrental.database.RentalTable
 import com.example.carrental.database.model.User
 import com.example.carrental.database.UserTable
 import com.example.carrental.database.model.Car
+import com.example.carrental.database.model.Rental
 
 object Mediator {
     //indicates what view was previously used
@@ -56,6 +59,16 @@ object Mediator {
     fun getUserBalance() : Long{
         val session = Session.getInstance()
         return session.getUser().balance!!
+    }
+
+    fun getUserName(context: Context ,id : Long) : String{
+        var userTable = UserTable(context)
+        return userTable.getByID(id).username.toString()
+    }
+
+    fun getCarModel(context: Context ,id : Long) : String{
+        var carTable = CarTable(context)
+        return carTable.getByID(id)?.model.toString()
     }
 
     //this function handles the new user button in Main
@@ -248,6 +261,22 @@ object Mediator {
 
     fun hasMoney(boolean: Boolean){
         moneyFlag = boolean
+    }
+
+    fun history(context: Context){
+        val intent = Intent(context, History::class.java)
+        context.startActivity(intent)
+
+        previousState = "menu"
+    }
+
+    fun setHistory(context: Context) : ArrayList<Rental>{
+        val session = Session.getInstance()
+        val user = session.getUser()
+
+        val rentalTable = RentalTable(context)
+        val list = rentalTable.getAllMine(user.id!!)
+        return list
     }
 
     // allow for users to search for people and review them

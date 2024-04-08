@@ -4,10 +4,13 @@ package com.example.carrental.database
  * This class allows access to the rental table through the database
  */
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.DatabaseUtils
+import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import com.example.carrental.database.model.Car
 import com.example.carrental.database.model.Rental
 
 class RentalTable(private val context: Context) : DataFunctions <Long , Rental> {
@@ -30,8 +33,74 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
         TODO("Not yet implemented")
     }
 
-    fun getAllMine(){
-        
+    @SuppressLint("Range")
+    fun getAllMine(userId : Long) : ArrayList<Rental>{
+        val database = DbHelper.getInstance(context)
+        val selectQueryAsOwner = "SELECT * FROM $RENTAL_TABLE_NAME WHERE $RENTAL_COLUMN_OWNER = \"$userId\""
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQueryAsOwner, null)
+
+        var rentals : ArrayList<Rental> = ArrayList()
+
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do{
+                    var id = cursor.getLong(cursor.getColumnIndex(RENTAL_COLUMN_ID))
+                    var carid = cursor.getLong(cursor.getColumnIndex(RENTAL_COLUMN_CAR))
+                    var owner = cursor.getLong(cursor.getColumnIndex(RENTAL_COLUMN_OWNER))
+                    var renter = cursor.getLong(cursor.getColumnIndex(RENTAL_COLUMN_RENTER))
+                    var price = cursor.getLong(cursor.getColumnIndex(RENTAL_COLUMN_PRICE))
+                    var location = cursor.getString(cursor.getColumnIndex(RENTAL_COLUMN_LOCATION))
+                    var model = cursor.getString(cursor.getColumnIndex(RENTAL_COLUMN_MODEL))
+                    var year = cursor.getString(cursor.getColumnIndex(RENTAL_COLUMN_YEAR))
+                    var mileage = cursor.getInt(cursor.getColumnIndex(RENTAL_COLUMN_MILEAGE))
+                    var date = cursor.getString(cursor.getColumnIndex(RENTAL_COLUMN_DATE))
+
+
+                    var rental : Rental? = Rental(id, carid, owner, renter, price, location, model, year, mileage, date)
+
+
+                    if (rental != null){
+                        rentals.add(rental)
+                    }
+                } while (cursor.moveToNext())
+            }
+        }
+
+        val selectQueryAsRenter = "SELECT * FROM $RENTAL_TABLE_NAME WHERE $RENTAL_COLUMN_RENTER = \"$userId\""
+        val cursor2 = db.rawQuery(selectQueryAsRenter, null)
+
+        if (cursor2 != null){
+            if (cursor2.moveToFirst()){
+                do{
+                    var id = cursor2.getLong(cursor2.getColumnIndex(RENTAL_COLUMN_ID))
+                    var carid = cursor2.getLong(cursor2.getColumnIndex(RENTAL_COLUMN_CAR))
+                    var owner = cursor2.getLong(cursor2.getColumnIndex(RENTAL_COLUMN_OWNER))
+                    var renter = cursor2.getLong(cursor2.getColumnIndex(RENTAL_COLUMN_RENTER))
+                    var price = cursor2.getLong(cursor2.getColumnIndex(RENTAL_COLUMN_PRICE))
+                    var location = cursor2.getString(cursor2.getColumnIndex(RENTAL_COLUMN_LOCATION))
+                    var model = cursor2.getString(cursor2.getColumnIndex(RENTAL_COLUMN_MODEL))
+                    var year = cursor2.getString(cursor2.getColumnIndex(RENTAL_COLUMN_YEAR))
+                    var mileage = cursor2.getInt(cursor2.getColumnIndex(RENTAL_COLUMN_MILEAGE))
+                    var date = cursor2.getString(cursor2.getColumnIndex(RENTAL_COLUMN_DATE))
+
+
+                    var rental : Rental? = Rental(id, carid, owner, renter, price, location, model, year, mileage, date)
+
+
+                    if (rental != null){
+                        rentals.add(rental)
+                    }
+                } while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        cursor2.close()
+        database.close()
+
+        return rentals
     }
 
     fun getCount(): Long{
@@ -76,6 +145,7 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
             database.writableDatabase.use { db ->
                 val content = ContentValues()
 
+                content.put(RENTAL_COLUMN_CAR, rental.car)
                 content.put(RENTAL_COLUMN_DATE, rental.date)
                 content.put(RENTAL_COLUMN_YEAR, rental.year)
                 content.put(RENTAL_COLUMN_MILEAGE, rental.mileage)

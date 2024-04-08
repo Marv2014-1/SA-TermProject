@@ -53,7 +53,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         if (cursor != null){
             if (cursor.moveToFirst()){
                 do{
-                    Log.e("Testing", "Start")
                     val id = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_ID))
                     val owner = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_OWNER))
                     val model = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_MODEL))

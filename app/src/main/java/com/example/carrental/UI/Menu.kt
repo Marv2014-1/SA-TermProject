@@ -36,6 +36,10 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
         binding.findPeople.setOnClickListener(){
             Mediator.people(this)
         }
+
+        binding.menuHistory.setOnClickListener(){
+            Mediator.history(this)
+        }
     }
 
     private fun setUpAdapter(){
