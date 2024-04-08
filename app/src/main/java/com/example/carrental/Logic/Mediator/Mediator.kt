@@ -142,6 +142,13 @@ object Mediator {
         return carTable.getByOwner(user)
     }
 
+    fun getOthersCars(context: Context) : ArrayList<Car> {
+        val carTable = CarTable(context)
+        var session = Session.getInstance()
+        val user = session.getUser()
+        return carTable.getOthers(user)
+    }
+
     fun getCar(context: Context, id : Long) : Car{
         val carTable = CarTable(context)
         val car : Car = carTable.getByID(id)!!

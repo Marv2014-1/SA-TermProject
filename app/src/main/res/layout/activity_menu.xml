@@ -44,12 +44,46 @@
         android:id="@+id/findPeople"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:layout_marginEnd="16dp"
         android:text="Find people"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/menu_filter"
+        app:layout_constraintTop_toBottomOf="@+id/myGarage" />
+
+    <Button
+        android:id="@+id/menu_filter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="128dp"
+        android:text="Filter listings"
+        app:layout_constraintEnd_toStartOf="@+id/findPeople"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuBack" />
+
+    <Button
+        android:id="@+id/menuHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:text="RentalHistory"
         app:layout_constraintEnd_toStartOf="@+id/myGarage"
         app:layout_constraintStart_toEndOf="@+id/menuBack"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/menuCarList"
+        android:layout_width="409dp"
+        android:layout_height="582dp"
+        android:layout_marginStart="1dp"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -14,6 +14,7 @@ class Car {
     var location : String = ""
     var price : Int = 0
     var renter : Long = -1
+    var ownerUsername : String = ""
 
     constructor(){
         id = -1
@@ -50,6 +51,10 @@ class Car {
         this.location = location
         this.price = price
         this.renter = renter
+    }
+
+    fun setUsername(ownerUsername: String){
+        this.ownerUsername = ownerUsername
     }
 
 }

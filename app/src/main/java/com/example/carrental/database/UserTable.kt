@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.util.Log
 import android.widget.Toast
+import com.example.carrental.database.model.Car
 import com.example.carrental.database.model.User
 
 class UserTable(private val context: Context) : DataFunctions <Long , User> {
@@ -123,9 +124,35 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         return id
     }
 
-    override fun getByID(id: Long): User? {
-        val database= DbHelper.getInstance(context)
-        TODO("Not yet implemented")
+    @SuppressLint("Range")
+    override fun getByID(id: Long): User {
+        val database = DbHelper.getInstance(context)
+        val selectQuery = "SELECT * FROM $USER_TABLE_NAME WHERE $USER_COLUMN_ID = \"$id\""
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        var user : User? = null
+
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do{
+                    val id = cursor.getLong(cursor.getColumnIndex(USER_COLUMN_ID))
+                    val username = cursor.getString(cursor.getColumnIndex(USER_COLUMN_USERNAME))
+                    val password = cursor.getString(cursor.getColumnIndex(USER_COLUMN_PASSWORD))
+                    val Q1 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q1))
+                    val Q2 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q2))
+                    val Q3 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q3))
+                    val balance = cursor.getLong(cursor.getColumnIndex(USER_COLUMN_BALANCE))
+
+                    user = User(id, username, password, Q1, Q2, Q3, balance)
+                } while (cursor.moveToNext())
+            }
+        }
+
+        database.close()
+        cursor.close()
+        return user!!
     }
 
     // get a user given the username

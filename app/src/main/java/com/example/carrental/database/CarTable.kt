@@ -80,6 +80,58 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return cars
     }
 
+    @SuppressLint("Range")
+    fun getOthers(user: User) : ArrayList<Car>{
+        val database = DbHelper.getInstance(context)
+        val selectQuery = "SELECT * FROM $CAR_TABLE_NAME WHERE $CAR_COLUMN_OWNER != \"${user.id}\""
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        var cars : ArrayList<Car> = ArrayList()
+
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do{
+                    Log.e("Testing", "Start")
+                    val id = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_ID))
+                    val owner = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_OWNER))
+                    val model = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_MODEL))
+                    val year = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_YEAR))
+                    val mileage = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_MILEAGE))
+                    val availability = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_AVAILABILITY))
+                    val location = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_LOCATION))
+                    val price = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_PRICE))
+                    val renter = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_RENTER))
+
+                    val username = findOwner(owner)
+
+                    var car : Car? = Car(id, owner, model, year, mileage, availability, location, price, renter)
+
+                    car?.setUsername(username)
+
+                    if (car != null){
+                        cars.add(car)
+                    }
+                } while (cursor.moveToNext())
+            }
+        }
+
+        database.close()
+        cursor.close()
+        return cars
+    }
+
+    fun findOwner(owner : Long) : String{
+        val database = DbHelper.getInstance(context)
+        val db = UserTable(context)
+
+        val user = db.getByID(owner)
+
+        database.close()
+        return user.username!!
+    }
+
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -122,16 +174,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
                         "WHERE $CAR_COLUMN_ID = \"${car.id}\""
 
         db.execSQL(updateQuery)
-
-//        db.execSQL(updateQuery, arrayOf(
-//            car.model,
-//            car.year,
-//            car.mileage,
-//            car.availability,
-//            car.location,
-//            car.price,
-//            car.id
-//        ))
 
         db.close()
         database.close()
