@@ -26,15 +26,15 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
     }
 
     @SuppressLint("Range")
-    override fun getALL(): List<User> {
+    override fun getALL(): ArrayList<User> {
         val database= DbHelper.getInstance(context)
         val selectQuery = "SELECT * FROM $USER_TABLE_NAME"
         val db : SQLiteDatabase = database.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)
 
+        val users = ArrayList<User>()
         if (cursor != null){
             if (cursor.moveToFirst()){
-                val users = ArrayList<User>()
                 do {
                     val id = cursor.getLong(cursor.getColumnIndex(USER_COLUMN_ID))
                     val username = cursor.getString(cursor.getColumnIndex(USER_COLUMN_USERNAME))
@@ -47,13 +47,12 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
                     var user = User(id, username, password, Q1, Q2, Q3, balance)
                     users.add(user)
                 } while (cursor.moveToNext())
-                return users
             }
         }
 
         database.close()
         cursor.close()
-        return emptyList()
+        return users
     }
 
     override fun update(user: User){

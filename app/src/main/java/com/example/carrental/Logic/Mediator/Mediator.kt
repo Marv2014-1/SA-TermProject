@@ -21,13 +21,16 @@ import com.example.carrental.UI.Menu
 import com.example.carrental.UI.NewCar
 import com.example.carrental.UI.NewPassword
 import com.example.carrental.UI.NewUser
+import com.example.carrental.UI.People
 import com.example.carrental.UI.UpdateCar
 import com.example.carrental.database.CarTable
 import com.example.carrental.database.RentalTable
+import com.example.carrental.database.ReviewTable
 import com.example.carrental.database.model.User
 import com.example.carrental.database.UserTable
 import com.example.carrental.database.model.Car
 import com.example.carrental.database.model.Rental
+import com.example.carrental.database.model.Review
 import java.util.logging.Filter
 
 object Mediator {
@@ -75,9 +78,25 @@ object Mediator {
         return userTable.getByID(id).username.toString()
     }
 
+    fun getUsers(context: Context) : ArrayList<User>{
+        val db = UserTable(context)
+        return db.getALL()
+    }
+
     fun getCarModel(context: Context ,id : Long) : String{
         var carTable = CarTable(context)
         return carTable.getByID(id)?.model.toString()
+    }
+
+    fun getScore(context: Context, id : Long) : String?{
+        val reviewTable = ReviewTable(context)
+        val review =  reviewTable.getByID(id)
+
+        if (review != null) {
+            return review.score.toString()
+        }
+
+        return "null"
     }
 
     //this function handles the new user button in Main
@@ -290,10 +309,32 @@ object Mediator {
 
     // allow for users to search for people and review them
     fun people(context: Context){
+        val intent = Intent(context, People::class.java)
+        context.startActivity(intent)
 
         previousState = "menu"
     }
 
+    fun reviewPage(context: Context, target: Long){
+        val intent = Intent(context, com.example.carrental.UI.Review::class.java)
+        intent.putExtra("target", target.toString())
+        context.startActivity(intent)
+        previousState = "people"
+    }
+
+    fun review(context: Context, target: Long, score : Double){
+        val session = Session.getInstance()
+        val user = session.getUser()
+        val db = ReviewTable(context)
+        var review = Review()
+        review.reviewer = user.id
+        review.target = target
+        review.score = score
+
+        db.insert(review)
+
+        people(context)
+    }
     fun filter(context: Context){
         val intent = Intent(context, FilterCar::class.java)
         context.startActivity(intent)
@@ -326,6 +367,8 @@ object Mediator {
         }else if (this.previousState == "garage"){
             this.previousState = "menu"
             garage(context)
+        }else if (this.previousState == "people"){
+            people(context)
         }
     }
 }

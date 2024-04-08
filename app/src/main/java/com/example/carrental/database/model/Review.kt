@@ -9,21 +9,34 @@ class Review {
     var reviewer : Long? = null
     var target : Long? = null
     var content : String? = null
-    var score : Int? = null
+    var score : Double? = null
 
     constructor(){
         id = -1
         reviewer = -1
         target = -1
         content = ""
-        score = -1
+        score = -1.0
     }
 
-    constructor(id : Long, reviewer : Long, target : Long, content : String, score : Int){
+    constructor(id : Long, reviewer : Long, target : Long, content : String, score : Double){
         this.id = id
         this.reviewer = reviewer
         this.target = target
         this.content = content
         this.score = score
+    }
+
+    fun setScore(score: Double){
+        var points = score
+        if (points > 5){
+            points = 5.0
+        }
+
+        if (points < 0){
+            points = 0.0
+        }
+
+        this.score = points
     }
 }

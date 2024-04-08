@@ -11,6 +11,7 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import com.example.carrental.database.model.Review
+import com.example.carrental.database.model.User
 
 class ReviewTable(private val context: Context) : DataFunctions <Long , Review> {
 
@@ -38,7 +39,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
                     val reviewer = cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_ID))
                     val target = cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_REVIEWER))
                     val content = cursor.getString(cursor.getColumnIndex(REVIEW_COLUMN_CONTENT))
-                    val score = cursor.getInt(cursor.getColumnIndex(REVIEW_COLUMN_SCORE))
+                    val score = cursor.getDouble(cursor.getColumnIndex(REVIEW_COLUMN_SCORE))
 
                     var review = Review(id, reviewer, target, content, score)
 
@@ -97,7 +98,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
 
                 content.put(REVIEW_COLUMN_REVIEWER, review.reviewer)
                 content.put(REVIEW_COLUMN_TARGET, review.target)
-                content.put(REVIEW_COLUMN_CONTENT, review.content)
+//                content.put(REVIEW_COLUMN_CONTENT, review.content)
                 content.put(REVIEW_COLUMN_SCORE, review.score)
 
                 id = db.insertOrThrow(REVIEW_TABLE_NAME, null, content)
@@ -112,8 +113,36 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         return id
     }
 
+    @SuppressLint("Range")
     override fun getByID(id: Long): Review? {
-        TODO("Not yet implemented")
+        val database = DbHelper.getInstance(context)
+        val selectQuery = "SELECT * FROM $REVIEW_TABLE_NAME WHERE $REVIEW_COLUMN_TARGET = \"$id\""
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        var review : Review? = null
+
+        var total = 0.0
+        var outOF = 0.0
+
+        review = Review()
+
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do{
+                    total += cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_SCORE))
+                    outOF += 5
+
+                } while (cursor.moveToNext())
+            }
+        }
+
+        review.setScore(total/outOF)
+
+        database.close()
+        cursor.close()
+        return review
     }
 
 }

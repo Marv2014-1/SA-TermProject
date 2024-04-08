@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity(){
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // This will delete the database entirely (disabled)
+//         This will delete the database entirely (disabled)
 //        val database = DbHelper.getInstance(this)
 //        database.deleteAll()
 
