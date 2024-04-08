@@ -68,12 +68,78 @@ class DbHelper private constructor(private var context: Context) : SQLiteOpenHel
             }
             return database as DbHelper
         }
+
+        private const val SQL_CREATE_USER_TABLE = """
+            CREATE TABLE IF NOT EXISTS "user" (
+                "id" INTEGER NOT NULL UNIQUE,
+                "username" TEXT NOT NULL UNIQUE,
+                "password" TEXT NOT NULL,
+                "question1" TEXT NOT NULL,
+                "question2" TEXT NOT NULL,
+                "question3" TEXT NOT NULL,
+                "balance" INTEGER NOT NULL,
+                PRIMARY KEY("id" AUTOINCREMENT)
+            )
+        """
+
+        private const val SQL_CREATE_RENTAL_TABLE = """
+            CREATE TABLE IF NOT EXISTS "rental" (
+                "id" INTEGER NOT NULL UNIQUE,
+                "car" INTEGER NOT NULL,
+                "owner" INTEGER NOT NULL,
+                "renter" INTEGER NOT NULL,
+                "price" INTEGER NOT NULL,
+                "location" TEXT,
+                "model" INTEGER,
+                "year" INTEGER,
+                "mileage" INTEGER,
+                "date" INTEGER,
+                FOREIGN KEY("car") REFERENCES "car"("id"),
+                FOREIGN KEY("renter") REFERENCES "user"("id"),
+                FOREIGN KEY("owner") REFERENCES "user"("id"),
+                PRIMARY KEY("id" AUTOINCREMENT)
+            )
+        """
+
+        private const val SQL_CREATE_REVIEW_TABLE = """
+            CREATE TABLE IF NOT EXISTS "review" (
+                "id" INTEGER NOT NULL UNIQUE,
+                "reviewer" INTEGER NOT NULL,
+                "target" INTEGER NOT NULL,
+                "content" INTEGER,
+                "score" INTEGER NOT NULL,
+                FOREIGN KEY("reviewer") REFERENCES "user"("id"),
+                FOREIGN KEY("target") REFERENCES "user"("id"),
+                PRIMARY KEY("id" AUTOINCREMENT)
+            )
+        """
+
+        private const val SQL_CREATE_CAR_TABLE = """
+            CREATE TABLE IF NOT EXISTS "car" (
+                "id" INTEGER NOT NULL UNIQUE,
+                "owner" INTEGER NOT NULL,
+                "model" TEXT,
+                "year" INTEGER,
+                "mileage" INTEGER,
+                "availability" TEXT,
+                "location" TEXT,
+                "price" INTEGER,
+                "renter" INTEGER,
+                FOREIGN KEY("owner") REFERENCES "user"("id"),
+                FOREIGN KEY("renter") REFERENCES "user"("id"),
+                PRIMARY KEY("id" AUTOINCREMENT)
+            )
+        """
     }
 
     //When this object is created, it will make all of the tables and columns of said tables
+    //When this object is created, it will make all of the tables and columns of said tables
     override fun onCreate(db: SQLiteDatabase) {
-        deleteAll()
-        recreate()
+        // Create tables
+        db.execSQL(DbHelper.SQL_CREATE_USER_TABLE)
+        db.execSQL(DbHelper.SQL_CREATE_RENTAL_TABLE)
+        db.execSQL(DbHelper.SQL_CREATE_REVIEW_TABLE)
+        db.execSQL(DbHelper.SQL_CREATE_CAR_TABLE)
     }
 
     //If the database version changes, we delete the table and upgrade the table
@@ -97,75 +163,4 @@ class DbHelper private constructor(private var context: Context) : SQLiteOpenHel
         Log.e("car", carTable.deleteAll().toString())
     }
 
-    //Create the database and tables
-    private fun recreate(){
-        val db:SQLiteDatabase = this.writableDatabase
-
-        val createUser = buildString {
-            append("CREATE TABLE IF EXISTS\"$USER_TABLE_NAME\" (\n")
-            append("\t\"$USER_COLUMN_ID\"\tINTEGER NOT NULL,\n")
-            append("\t\"$USER_COLUMN_USERNAME\"\tTEXT NOT NULL UNIQUE,\n")
-            append("\t\"$USER_COLUMN_PASSWORD\"\tTEXT NOT NULL,\n")
-            append("\t\"$USER_COLUMN_Q1\"\tTEXT NOT NULL,\n")
-            append("\t\"$USER_COLUMN_Q2\"\tTEXT NOT NULL,\n")
-            append("\t\"$USER_COLUMN_Q3\"\tTEXT NOT NULL,\n")
-            append("\t\"$USER_COLUMN_BALANCE\"\tINTEGER NOT NULL,\n")
-            append("\tPRIMARY KEY(\"$USER_COLUMN_ID\" AUTOINCREMENT)\n")
-            append(");\n")
-        }
-
-        val createCar = buildString {
-            append("CREATE TABLE IF EXISTS\"$CAR_TABLE_NAME\" (\n")
-            append("\t\"$CAR_COLUMN_ID\"\tINTEGER NOT NULL UNIQUE,\n")
-            append("\t\"$CAR_COLUMN_OWNER\"\tINTEGER NOT NULL,\n")
-            append("\t\"$CAR_COLUMN_MODEL\"\tTEXT,\n")
-            append("\t\"$CAR_COLUMN_YEAR\"\tTEXT,\n")
-            append("\t\"$CAR_COLUMN_MILEAGE\"\tINTEGER,\n")
-            append("\t\"$CAR_COLUMN_AVAILABILITY\"\tTEXT,\n")
-            append("\t\"$CAR_COLUMN_LOCATION\"\tTEXT,\n")
-            append("\t\"$CAR_COLUMN_PRICE\"\tINTEGER,\n")
-            append("\t\"$CAR_COLUMN_RENTER\"\tINTEGER,\n")
-            append("\tPRIMARY KEY(\"$CAR_COLUMN_ID\" AUTOINCREMENT),\n")
-            append("\tFOREIGN KEY(\"$CAR_COLUMN_OWNER\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append("\tFOREIGN KEY(\"$CAR_COLUMN_RENTER\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append(");\n")
-        }
-
-        val createReview = buildString {
-            append("CREATE TABLE IF EXISTS\"$REVIEW_TABLE_NAME\" (\n")
-            append("\t\"$REVIEW_COLUMN_ID\"\tINTEGER NOT NULL UNIQUE,\n")
-            append("\t\"$REVIEW_COLUMN_REVIEWER\"\tINTEGER NOT NULL,\n")
-            append("\t\"$REVIEW_COLUMN_TARGET\"\tINTEGER NOT NULL,\n")
-            append("\t\"$REVIEW_COLUMN_CONTENT\"\tTEXT,\n")
-            append("\t\"$REVIEW_COLUMN_SCORE\"\tINTEGER NOT NULL,\n")
-            append("\tPRIMARY KEY(\"$REVIEW_COLUMN_ID\" AUTOINCREMENT),\n")
-            append("\tFOREIGN KEY(\"$REVIEW_COLUMN_REVIEWER\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append("\tFOREIGN KEY(\"$REVIEW_COLUMN_TARGET\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append(");\n")
-        }
-
-        val createRental = buildString {
-            append("CREATE TABLE IF EXISTS\"$RENTAL_TABLE_NAME\" (\n")
-            append("\t\"$RENTAL_COLUMN_ID\"\tINTEGER NOT NULL UNIQUE,\n")
-            append("\t\"$RENTAL_COLUMN_CAR\"\tINTEGER NOT NULL,\n")
-            append("\t\"$RENTAL_COLUMN_OWNER\"\tINTEGER NOT NULL,\n")
-            append("\t\"$RENTAL_COLUMN_RENTER\"\tINTEGER NOT NULL,\n")
-            append("\t\"$RENTAL_COLUMN_PRICE\"\tINTEGER NOT NULL,\n")
-            append("\t\"$RENTAL_COLUMN_LOCATION\"\tTEXT,\n")
-            append("\t\"$RENTAL_COLUMN_MODEL\"\tTEXT,\n")
-            append("\t\"$RENTAL_COLUMN_YEAR\"\tTEXT,\n")
-            append("\t\"$RENTAL_COLUMN_MILEAGE\"\tINTEGER,\n")
-            append("\t\"$RENTAL_COLUMN_DATE\"\tTEXT,\n")
-            append("\tPRIMARY KEY(\"$RENTAL_COLUMN_ID\" AUTOINCREMENT),\n")
-            append("\tFOREIGN KEY(\"$RENTAL_COLUMN_CAR\") REFERENCES \"$CAR_TABLE_NAME\"(\"$CAR_COLUMN_ID\"),\n")
-            append("\tFOREIGN KEY(\"$RENTAL_COLUMN_RENTER\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append("\tFOREIGN KEY(\"$RENTAL_COLUMN_OWNER\") REFERENCES \"$USER_TABLE_NAME\"(\"$USER_COLUMN_ID\"),\n")
-            append(");\n")
-        }
-
-        db.execSQL(createUser)
-        db.execSQL(createCar)
-        db.execSQL(createReview)
-        db.execSQL(createRental)
-    }
 }

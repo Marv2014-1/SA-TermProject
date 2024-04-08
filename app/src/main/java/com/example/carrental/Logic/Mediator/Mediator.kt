@@ -41,7 +41,8 @@ object Mediator {
         }
 
         //implement the Singleton pattern to manage the user's session securely.
-        Session.startSession(user)
+        var session = Session.getInstance()
+        session.startSession(user)
 
         val intent = Intent(context, Menu::class.java)
         context.startActivity(intent)
@@ -136,7 +137,8 @@ object Mediator {
     // return all the cars that the user owns for display in the garage
     fun getUserCars(context: Context): ArrayList<Car> {
         val carTable = CarTable(context)
-        val user = Session.getUser()
+        var session = Session.getInstance()
+        val user = session.getUser()
         return carTable.getByOwner(user)
     }
 
@@ -164,7 +166,8 @@ object Mediator {
         builder.setPrice(price)
 
         val car = builder.getResult()
-        val currentUser = Session.getUser()
+        var session = Session.getInstance()
+        val currentUser = session.getUser()
         car.owner = currentUser.id!!
 
         val carTable = CarTable(context)
@@ -198,7 +201,8 @@ object Mediator {
         builder.setPrice(price)
 
         val car = builder.getResult()
-        val currentUser = Session.getUser()
+        var session = Session.getInstance()
+        val currentUser = session.getUser()
         car.owner = currentUser.id!!
 
         Log.e("Car NOT updated", "REE")
