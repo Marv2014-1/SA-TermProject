@@ -40,6 +40,10 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
         binding.menuHistory.setOnClickListener(){
             Mediator.history(this)
         }
+
+        binding.menuFilter.setOnClickListener(){
+            Mediator.filter(this)
+        }
     }
 
     private fun setUpAdapter(){

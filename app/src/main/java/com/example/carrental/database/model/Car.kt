@@ -15,6 +15,8 @@ class Car {
     var price : Int = 0
     var renter : Long = -1
     var ownerUsername : String = ""
+    var low : Int = -1
+    var high : Int = -1
 
     constructor(){
         id = -1
@@ -26,6 +28,8 @@ class Car {
         location = ""
         price = 0
         renter = -1
+        low = -1
+        high = -1
     }
 
     constructor(id : Long, owner : Long, model : String, year : String, mileage : Int,

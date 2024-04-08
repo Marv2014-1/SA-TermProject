@@ -80,9 +80,31 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
     }
 
     @SuppressLint("Range")
-    fun getOthers(user: User) : ArrayList<Car>{
+    fun getOthers(user: User, car: Car) : ArrayList<Car>{
         val database = DbHelper.getInstance(context)
-        val selectQuery = "SELECT * FROM $CAR_TABLE_NAME WHERE $CAR_COLUMN_OWNER != \"${user.id}\""
+        var selectQuery = "SELECT * FROM $CAR_TABLE_NAME WHERE $CAR_COLUMN_OWNER != \"${user.id}\" "
+
+        if (car.model != ""){
+            selectQuery += "AND $CAR_COLUMN_MODEL = \"${car.model}\" "
+        }
+
+        if (car.availability != ""){
+            selectQuery += "AND $CAR_COLUMN_AVAILABILITY = \"${car.availability}\" "
+        }
+
+        if (car.location != ""){
+            selectQuery += "AND $CAR_COLUMN_LOCATION = \"${car.location}\" "
+        }
+
+        if (car.low != -1){
+            selectQuery += "AND $CAR_COLUMN_PRICE > \"${car.low}\" "
+        }
+
+        if (car.high != -1){
+            selectQuery += "AND $CAR_COLUMN_PRICE < \"${car.high}\" "
+        }
+
+        selectQuery += ";"
 
         val db : SQLiteDatabase = database.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)

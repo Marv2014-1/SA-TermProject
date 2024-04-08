@@ -12,6 +12,7 @@ import com.example.carrental.Logic.Singleton.Session
 import com.example.carrental.Logic.proxy.PaymentProxy
 import com.example.carrental.Logic.proxy.PaymentService
 import com.example.carrental.Logic.proxy.PaymentServiceConcrete
+import com.example.carrental.UI.FilterCar
 import com.example.carrental.UI.ForgotPassword
 import com.example.carrental.UI.Garage
 import com.example.carrental.UI.History
@@ -27,17 +28,21 @@ import com.example.carrental.database.model.User
 import com.example.carrental.database.UserTable
 import com.example.carrental.database.model.Car
 import com.example.carrental.database.model.Rental
+import java.util.logging.Filter
 
 object Mediator {
     //indicates what view was previously used
     private var previousState : String = ""
     //indicates if the questions were answered wrong
     private var passwordFlag : Boolean = false
+    private var filter : Car = Car()
 
     //this function handles the login button in Main
     fun login(context : Context, username : String, password : String){
         val userTable = UserTable(context)
         val user = userTable.getByUsernamePassword(username, password)
+
+        filter = Car()
 
         if (user == null){
             val intent = Intent(context, MainActivity::class.java)
@@ -50,6 +55,10 @@ object Mediator {
         var session = Session.getInstance()
         session.startSession(user)
 
+        menu(context)
+    }
+
+    fun menu(context: Context){
         val intent = Intent(context, Menu::class.java)
         context.startActivity(intent)
 
@@ -167,7 +176,7 @@ object Mediator {
         val carTable = CarTable(context)
         var session = Session.getInstance()
         val user = session.getUser()
-        return carTable.getOthers(user)
+        return carTable.getOthers(user, filter)
     }
 
     fun getCar(context: Context, id : Long) : Car{
@@ -283,6 +292,25 @@ object Mediator {
     fun people(context: Context){
 
         previousState = "menu"
+    }
+
+    fun filter(context: Context){
+        val intent = Intent(context, FilterCar::class.java)
+        context.startActivity(intent)
+
+        previousState = "menu"
+    }
+
+    fun setFilter(context: Context, model : String, availability: String, location: String, low: Int, high: Int){
+        filter.model = model
+        filter.availability = availability
+        filter.location = location
+        if (low < high) {
+            filter.low = low
+            filter.high = low
+        }
+
+        menu(context)
     }
 
     //this function handles the revert button
