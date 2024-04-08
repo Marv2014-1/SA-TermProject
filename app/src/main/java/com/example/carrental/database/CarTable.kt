@@ -104,13 +104,15 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
                     val price = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_PRICE))
                     val renter = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_RENTER))
 
+                    Log.e("renter", renter.toString())
+
                     val username = findOwner(owner)
 
                     var car : Car? = Car(id, owner, model, year, mileage, availability, location, price, renter)
 
                     car?.setUsername(username)
 
-                    if (car != null){
+                    if (car != null && renter == -1L){
                         cars.add(car)
                     }
                 } while (cursor.moveToNext())
@@ -170,8 +172,9 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
                         " $CAR_COLUMN_MILEAGE = \"${car.mileage}\", " +
                         " $CAR_COLUMN_AVAILABILITY = \"${car.availability}\", " +
                         " $CAR_COLUMN_LOCATION = \"${car.location}\", " +
-                        " $CAR_COLUMN_PRICE = \"${car.price}\" " +
-                        "WHERE $CAR_COLUMN_ID = \"${car.id}\""
+                        " $CAR_COLUMN_PRICE = \"${car.price}\", " +
+                        " $CAR_COLUMN_RENTER = \"${car.renter}\" " +
+                        "WHERE $CAR_COLUMN_ID = \"${car.id}\" "
 
         db.execSQL(updateQuery)
 

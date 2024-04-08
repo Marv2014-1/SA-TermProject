@@ -42,4 +42,17 @@ class Rental {
         this.mileage = mileage
         this.date = date
     }
+
+    constructor(car: Long, owner : Long, renter : Long, price : Long,
+                location : String, model : String, year : String, mileage : Int, date : String){
+        this.car = id
+        this.owner = owner
+        this.renter = renter
+        this.price = price
+        this.location = location
+        this.model = model
+        this.year = year
+        this.mileage = mileage
+        this.date = date
+    }
 }

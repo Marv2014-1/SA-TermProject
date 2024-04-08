@@ -9,6 +9,9 @@ import com.example.carrental.Logic.ChainOfResponsability.QuestionOne
 import com.example.carrental.Logic.ChainOfResponsability.QuestionThree
 import com.example.carrental.Logic.ChainOfResponsability.QuestionTwo
 import com.example.carrental.Logic.Singleton.Session
+import com.example.carrental.Logic.proxy.PaymentProxy
+import com.example.carrental.Logic.proxy.PaymentService
+import com.example.carrental.Logic.proxy.PaymentServiceConcrete
 import com.example.carrental.UI.ForgotPassword
 import com.example.carrental.UI.Garage
 import com.example.carrental.UI.MainActivity
@@ -48,6 +51,11 @@ object Mediator {
         context.startActivity(intent)
 
         previousState = "main"
+    }
+
+    fun getUserBalance() : Long{
+        val session = Session.getInstance()
+        return session.getUser().balance!!
     }
 
     //this function handles the new user button in Main
@@ -221,6 +229,25 @@ object Mediator {
         Log.e("Car updated", "Update")
 
         garage(context)
+    }
+
+    private var moneyFlag = true
+
+    fun rentCar(context: Context, target : Long, car : Car){
+        val paymentProxy : PaymentProxy = PaymentProxy(context, PaymentServiceConcrete(context))
+
+        paymentProxy.processPayment(target, car)
+
+        val intent = Intent(context, Menu::class.java)
+        if (moneyFlag == false){
+            moneyFlag = true
+            intent.putExtra("error", "You don't have the money")
+        }
+        context.startActivity(intent)
+    }
+
+    fun hasMoney(boolean: Boolean){
+        moneyFlag = boolean
     }
 
     // allow for users to search for people and review them

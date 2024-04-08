@@ -4,11 +4,13 @@ package com.example.carrental.database
  * This class allows access to the rental table through the database
  */
 
+import android.content.ContentValues
 import android.content.Context
 import android.database.DatabaseUtils
-import com.example.carrental.database.model.User
+import android.database.sqlite.SQLiteException
+import com.example.carrental.database.model.Rental
 
-class RentalTable(private val context: Context) : DataFunctions <Long , User> {
+class RentalTable(private val context: Context) : DataFunctions <Long , Rental> {
 
     companion object{
         private val RENTAL_TABLE_NAME = "rental"
@@ -24,8 +26,12 @@ class RentalTable(private val context: Context) : DataFunctions <Long , User> {
         private val RENTAL_COLUMN_DATE = "date"
     }
 
-    override fun getALL(): List<User> {
+    override fun getALL(): List<Rental> {
         TODO("Not yet implemented")
+    }
+
+    fun getAllMine(){
+        
     }
 
     fun getCount(): Long{
@@ -54,19 +60,45 @@ class RentalTable(private val context: Context) : DataFunctions <Long , User> {
         TODO("Not yet implemented")
     }
 
-    override fun delete(t: User) {
+    override fun delete(t: Rental) {
         TODO("Not yet implemented")
     }
 
-    override fun update(t: User) {
+    override fun update(t: Rental) {
         TODO("Not yet implemented")
     }
 
-    override fun insert(t: User): Long? {
-        TODO("Not yet implemented")
+    override fun insert(rental: Rental): Long? {
+        var id: Long = -1
+        val database= DbHelper.getInstance(context)
+
+        try {
+            database.writableDatabase.use { db ->
+                val content = ContentValues()
+
+                content.put(RENTAL_COLUMN_DATE, rental.date)
+                content.put(RENTAL_COLUMN_YEAR, rental.year)
+                content.put(RENTAL_COLUMN_MILEAGE, rental.mileage)
+                content.put(RENTAL_COLUMN_MODEL, rental.model)
+                content.put(RENTAL_COLUMN_LOCATION, rental.location)
+                content.put(RENTAL_COLUMN_PRICE, rental.price)
+                content.put(RENTAL_COLUMN_RENTER, rental.renter)
+                content.put(RENTAL_COLUMN_OWNER, rental.owner)
+
+
+                id = db.insert(RENTAL_TABLE_NAME, null, content)
+
+                rental.id = id
+            }
+        } catch (e : SQLiteException){
+            println(e)
+        }
+
+        database.close()
+        return id
     }
 
-    override fun getByID(id: Long): User? {
+    override fun getByID(id: Long): Rental? {
         TODO("Not yet implemented")
     }
 }

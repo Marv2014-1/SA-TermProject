@@ -23,6 +23,8 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
 
         setUpAdapter()
 
+        binding.menuBalance.text = Mediator.getUserBalance().toString()
+
         binding.menuBack.setOnClickListener(){
             Mediator.back(this)
         }
@@ -49,7 +51,7 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
 
     override fun onButtonClick(position: Int, buttonId: Int) {
         if (R.id.menuCarRentButton == buttonId){
-            //do stuff on car rent
+            Mediator.rentCar(this, newArrayList.get(position).owner, newArrayList.get(position))
         }
     }
 }

@@ -55,11 +55,12 @@
         android:id="@+id/menu_filter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="128dp"
+        android:layout_marginStart="110dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="16dp"
         android:text="Filter listings"
         app:layout_constraintEnd_toStartOf="@+id/findPeople"
+        app:layout_constraintHorizontal_bias="0.96"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/menuBack" />
 
@@ -85,5 +86,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="38dp"
+        android:text="Balance:"
+        app:layout_constraintEnd_toStartOf="@+id/menu_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/menuBack" />
+
+    <TextView
+        android:id="@+id/menuBalance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:text="$"
+        app:layout_constraintEnd_toStartOf="@+id/menu_filter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

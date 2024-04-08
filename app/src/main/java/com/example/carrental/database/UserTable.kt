@@ -62,6 +62,16 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         val updateQuery = "UPDATE $USER_TABLE_NAME SET $USER_COLUMN_PASSWORD = \"${user.password}\" WHERE $USER_COLUMN_USERNAME = \"${user.username}\""
 
         db.execSQL(updateQuery)
+        database.close()
+    }
+
+    fun updateBalance(user: User){
+        val database = DbHelper.getInstance(context)
+        val db : SQLiteDatabase = database.writableDatabase
+        val updateQuery = "UPDATE $USER_TABLE_NAME SET $USER_COLUMN_BALANCE = \"${user.balance}\" WHERE $USER_COLUMN_USERNAME = \"${user.username}\""
+
+        db.execSQL(updateQuery)
+        database.close()
     }
 
     fun getCount(): Long{
