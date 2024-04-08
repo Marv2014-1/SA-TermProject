@@ -3,6 +3,7 @@ package com.example.carrental.UI
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.widget.EditText
 import com.example.carrental.Logic.Mediator.Mediator
 import com.example.carrental.R
@@ -23,6 +24,8 @@ class UpdateCar : AppCompatActivity() {
             id = extras.getLong("ID")
 
             val car : Car = Mediator.getCar(this, id)
+
+//            Log.e("car" , car.toString())
 
             binding.updateCarModel.setText(car.model)
             binding.updateCarYear.setText(car.year)

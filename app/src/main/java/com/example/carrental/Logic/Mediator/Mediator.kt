@@ -201,6 +201,7 @@ object Mediator {
         builder.setPrice(price)
 
         val car = builder.getResult()
+        Log.e("car", car.toString())
         var session = Session.getInstance()
         val currentUser = session.getUser()
         car.owner = currentUser.id!!

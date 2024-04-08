@@ -52,7 +52,7 @@ class CarBuilder : Builder {
     }
 
     fun getResult() : Car{
-        var car = Car(owner, model, year, mileage, availability, location, price, renter)
+        var car = Car(id, owner, model, year, mileage, availability, location, price, renter)
 
         return car
     }
