@@ -92,7 +92,7 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
                     if (rental != null){
                         rentals.add(rental)
                     }
-                } while (cursor.moveToNext())
+                } while (cursor2.moveToNext())
             }
         }
 

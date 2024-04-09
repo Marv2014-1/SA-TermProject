@@ -2,7 +2,9 @@ package com.example.carrental.Logic.Mediator
 
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.example.carrental.Logic.Builder.CarBuilder
 import com.example.carrental.Logic.ChainOfResponsability.QuestionHandler
 import com.example.carrental.Logic.ChainOfResponsability.QuestionOne
@@ -10,7 +12,6 @@ import com.example.carrental.Logic.ChainOfResponsability.QuestionThree
 import com.example.carrental.Logic.ChainOfResponsability.QuestionTwo
 import com.example.carrental.Logic.Singleton.Session
 import com.example.carrental.Logic.proxy.PaymentProxy
-import com.example.carrental.Logic.proxy.PaymentService
 import com.example.carrental.Logic.proxy.PaymentServiceConcrete
 import com.example.carrental.UI.FilterCar
 import com.example.carrental.UI.ForgotPassword
@@ -18,20 +19,22 @@ import com.example.carrental.UI.Garage
 import com.example.carrental.UI.History
 import com.example.carrental.UI.MainActivity
 import com.example.carrental.UI.Menu
+import com.example.carrental.UI.MessageListing
 import com.example.carrental.UI.NewCar
 import com.example.carrental.UI.NewPassword
 import com.example.carrental.UI.NewUser
 import com.example.carrental.UI.People
 import com.example.carrental.UI.UpdateCar
 import com.example.carrental.database.CarTable
+import com.example.carrental.database.MessageTable
 import com.example.carrental.database.RentalTable
 import com.example.carrental.database.ReviewTable
 import com.example.carrental.database.model.User
 import com.example.carrental.database.UserTable
 import com.example.carrental.database.model.Car
+import com.example.carrental.database.model.Message
 import com.example.carrental.database.model.Rental
 import com.example.carrental.database.model.Review
-import java.util.logging.Filter
 
 object Mediator {
     //indicates what view was previously used
@@ -257,17 +260,12 @@ object Mediator {
         builder.setPrice(price)
 
         val car = builder.getResult()
-        Log.e("car", car.toString())
         var session = Session.getInstance()
         val currentUser = session.getUser()
         car.owner = currentUser.id!!
 
-        Log.e("Car NOT updated", "REE")
-
         val carTable = CarTable(context)
         carTable.update(car)
-
-        Log.e("Car updated", "Update")
 
         garage(context)
     }
@@ -298,13 +296,12 @@ object Mediator {
         previousState = "menu"
     }
 
-    fun setHistory(context: Context) : ArrayList<Rental>{
+    fun setHistory(context: Context): ArrayList<Rental> {
         val session = Session.getInstance()
         val user = session.getUser()
 
         val rentalTable = RentalTable(context)
-        val list = rentalTable.getAllMine(user.id!!)
-        return list
+        return rentalTable.getAllMine(user.id!!)
     }
 
     // allow for users to search for people and review them
@@ -352,6 +349,36 @@ object Mediator {
         }
 
         menu(context)
+    }
+
+    fun message(context: Context , target: Long){
+        val intent = Intent(context, MessageListing::class.java)
+        intent.putExtra("Id" , target)
+        context.startActivity(intent)
+
+        previousState = "people"
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun sendMessage(context: Context, target: Long, text : String){
+        val messageTable = MessageTable(context)
+        val session = Session.getInstance()
+        val user = session.getUser()
+
+        var message = Message(text, target, user.id!!)
+
+        messageTable.insert(message)
+
+        message(context, target)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getMessages(context: Context, targetId : Long) : ArrayList<Message>{
+        val messageTable = MessageTable(context)
+        val session = Session.getInstance()
+        val user = session.getUser()
+        val result = messageTable.getCurrentConvo(user.id!!, targetId)
+        return result
     }
 
     //this function handles the revert button

@@ -114,7 +114,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         if (cursor != null){
             if (cursor.moveToFirst()){
                 do{
-                    Log.e("Testing", "Start")
                     val id = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_ID))
                     val owner = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_OWNER))
                     val model = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_MODEL))
@@ -124,8 +123,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
                     val location = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_LOCATION))
                     val price = cursor.getInt(cursor.getColumnIndex(CAR_COLUMN_PRICE))
                     val renter = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_RENTER))
-
-                    Log.e("renter", renter.toString())
 
                     val username = findOwner(owner)
 
@@ -246,7 +243,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         if (cursor != null){
             if (cursor.moveToFirst()){
                 do{
-                    Log.e("Testing", "Start")
                     val id = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_ID))
                     val owner = cursor.getLong(cursor.getColumnIndex(CAR_COLUMN_OWNER))
                     val model = cursor.getString(cursor.getColumnIndex(CAR_COLUMN_MODEL))

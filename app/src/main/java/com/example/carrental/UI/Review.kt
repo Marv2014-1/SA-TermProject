@@ -28,7 +28,12 @@ class Review : AppCompatActivity() {
         }
 
         binding.sendButon.setOnClickListener(){
-            Mediator.review(this, value, binding.reviewNum.text.toString().toDouble())
+            var num = binding.reviewNum.text.toString().toDouble()
+
+            if (num > 5.0){
+                num = 5.0
+            }
+            Mediator.review(this, value, num)
         }
     }
 }

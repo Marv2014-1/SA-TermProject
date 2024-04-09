@@ -30,7 +30,8 @@ class PeopleAdapter(private val context: Context,private val peopleList: ArrayLi
     override fun onBindViewHolder(holder: PeopleAdapter.MyViewHolder, position: Int) {
         val currentItem = peopleList[position]
         holder.username.text = currentItem.username
-        val score = Mediator.getScore(context , currentItem.id!!)
+        var rating = Mediator.getScore(context , currentItem.id!!).toString().toDouble()
+        holder.score.text = "${rating * 100} %"
     }
 
     class MyViewHolder(itemView : View, listener: PeopleAdapter.OnButtonClickListener) : RecyclerView.ViewHolder(itemView){

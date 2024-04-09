@@ -45,6 +45,7 @@ class People : AppCompatActivity(), PeopleAdapter.OnButtonClickListener {
     override fun onButtonClick(position: Int, buttonId: Int) {
         if (R.id.peopleMessage == buttonId){
             val personId = newArrayList.get(position).id
+            Mediator.message(this, personId!!)
         }
         else if (R.id.peopleReview == buttonId){
             val personId = newArrayList.get(position).id

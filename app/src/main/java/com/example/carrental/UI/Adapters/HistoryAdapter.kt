@@ -1,6 +1,7 @@
 package com.example.carrental.UI.Adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,7 +27,7 @@ class HistoryAdapter(private val context : Context ,private val rentalList: Arra
     override fun onBindViewHolder(holder: HistoryAdapter.MyViewHolder, position: Int) {
         val currentItem = rentalList[position]
         holder.owner.text = Mediator.getUserName(context , currentItem.owner!!)
-        holder.model.text = Mediator.getCarModel(context, currentItem.car!!)
+        holder.model.text = currentItem.model
         holder.mileage.text = currentItem.mileage.toString()
         holder.year.text = currentItem.year
         holder.renter.text = Mediator.getUserName(context , currentItem.renter!!)
