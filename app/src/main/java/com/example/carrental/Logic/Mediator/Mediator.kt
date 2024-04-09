@@ -3,7 +3,6 @@ package com.example.carrental.Logic.Mediator
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.carrental.Logic.Builder.CarBuilder
 import com.example.carrental.Logic.ChainOfResponsability.QuestionHandler
@@ -11,8 +10,8 @@ import com.example.carrental.Logic.ChainOfResponsability.QuestionOne
 import com.example.carrental.Logic.ChainOfResponsability.QuestionThree
 import com.example.carrental.Logic.ChainOfResponsability.QuestionTwo
 import com.example.carrental.Logic.Singleton.Session
-import com.example.carrental.Logic.proxy.PaymentProxy
-import com.example.carrental.Logic.proxy.PaymentServiceConcrete
+import com.example.carrental.Logic.Proxy.PaymentProxy
+import com.example.carrental.Logic.Proxy.PaymentServiceConcrete
 import com.example.carrental.UI.FilterCar
 import com.example.carrental.UI.ForgotPassword
 import com.example.carrental.UI.Garage
@@ -345,7 +344,7 @@ object Mediator {
         filter.location = location
         if (low < high) {
             filter.low = low
-            filter.high = low
+            filter.high = high
         }
 
         menu(context)

@@ -1,8 +1,7 @@
-package com.example.carrental.Logic.proxy
+package com.example.carrental.Logic.Proxy
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.carrental.Logic.Singleton.Session
 import com.example.carrental.database.CarTable

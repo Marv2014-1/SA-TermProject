@@ -10,6 +10,7 @@ class Review {
     var target : Long? = null
     var content : String? = null
     var score : Double? = null
+    var seen : Boolean = false
 
     constructor(){
         id = -1

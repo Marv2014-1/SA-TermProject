@@ -104,8 +104,6 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
             selectQuery += "AND $CAR_COLUMN_PRICE < \"${car.high}\" "
         }
 
-        selectQuery += ";"
-
         val db : SQLiteDatabase = database.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)
 

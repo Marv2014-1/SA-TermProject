@@ -43,6 +43,7 @@ private val REVIEW_COLUMN_REVIEWER = "reviewer"
 private val REVIEW_COLUMN_TARGET = "target"
 private val REVIEW_COLUMN_CONTENT = "content"
 private val REVIEW_COLUMN_SCORE = "score"
+private val REVIEW_COLUMN_SEEN = "seen"
 
 // Rental table variables
 private val RENTAL_TABLE_NAME = "rental"
@@ -56,6 +57,8 @@ private val RENTAL_COLUMN_MODEL = "model"
 private val RENTAL_COLUMN_YEAR = "year"
 private val RENTAL_COLUMN_MILEAGE = "mileage"
 private val RENTAL_COLUMN_DATE = "date"
+private val RENTAL_COLUMN_OWNER_SEEN = "owner_seen"
+private val RENTAL_COLUMN_RENTER_SEEN = "renter_seen"
 
 // Message table variables
 private val MESSAGE_TABLE_NAME = "messages"
@@ -64,6 +67,7 @@ private val MESSAGE_TABLE_SENDER = "sender"
 private val MESSAGE_TABLE_RECEIVER = "receiver"
 private val MESSAGE_TABLE_TEXT = "text"
 private val MESSAGE_TABLE_TIME = "time"
+private val MESSAGE_TABLE_SEEN = "seen"
 
 /**
  * Create a helper object to create and access the database (ensure that it is closed after use)
@@ -128,6 +132,8 @@ class DbHelper private constructor(private var context: Context) : SQLiteOpenHel
                 "year" INTEGER,
                 "mileage" INTEGER,
                 "date" INTEGER,
+                "owner_seen" TEXT,
+                "renter_seen" TEXT,
                 FOREIGN KEY("car") REFERENCES "car"("id"),
                 FOREIGN KEY("renter") REFERENCES "user"("id"),
                 FOREIGN KEY("owner") REFERENCES "user"("id"),
@@ -143,6 +149,7 @@ class DbHelper private constructor(private var context: Context) : SQLiteOpenHel
                 "target" INTEGER NOT NULL,
                 "content" INTEGER,
                 "score" INTEGER NOT NULL,
+                "seen" TEXT,
                 FOREIGN KEY("reviewer") REFERENCES "user"("id"),
                 FOREIGN KEY("target") REFERENCES "user"("id"),
                 PRIMARY KEY("id" AUTOINCREMENT)
@@ -157,6 +164,7 @@ class DbHelper private constructor(private var context: Context) : SQLiteOpenHel
                 "receiver"	INTEGER NOT NULL,
                 "text"	TEXT NOT NULL,
                 "time"	TEXT NOT NULL,
+                "seen" TEXT,
                 FOREIGN KEY("receiver") REFERENCES "user"("id"),
                 FOREIGN KEY("sender") REFERENCES "user"("id"),
                 PRIMARY KEY("id" AUTOINCREMENT)

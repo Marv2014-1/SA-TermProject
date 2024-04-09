@@ -13,6 +13,7 @@ class Message {
     var receiverId: Long = -1
     @RequiresApi(Build.VERSION_CODES.O)
     var timestamp: String = LocalTime.now().hour.toString() + ":" + LocalTime.now().minute.toString()
+    var seen : Boolean = false
 
     @RequiresApi(Build.VERSION_CODES.O)
     constructor(id : Long, text : String, senderId : Long, receiverId: Long, timestamp: String){

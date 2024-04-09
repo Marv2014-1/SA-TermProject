@@ -15,6 +15,8 @@ class Rental {
     var year : String? = null
     var mileage : Int? = null
     var date : String? = null
+    var ownerSeen : Boolean = false
+    var renterSeen : Boolean = false
 
     constructor(){
         id = -1
@@ -27,6 +29,8 @@ class Rental {
         year = ""
         mileage = -1
         date = ""
+        ownerSeen = false
+        renterSeen = false
     }
 
     constructor(id : Long, car: Long, owner : Long, renter : Long, price : Long,
