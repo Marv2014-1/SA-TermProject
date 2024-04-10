@@ -161,7 +161,10 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
 
         database.close()
         cursor.close()
-        return user!!
+        if (user != null){
+            return user
+        }
+        return User()
     }
 
     // get a user given the username

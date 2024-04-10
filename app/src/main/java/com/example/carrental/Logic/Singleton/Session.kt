@@ -5,6 +5,7 @@ import com.example.carrental.database.model.User
 class Session private constructor(){
 
     private var user : User = User()
+    private var notifications = ArrayList<String>()
 
     companion object{
         private var session : Session? = null
@@ -31,6 +32,15 @@ class Session private constructor(){
 
     fun endSession(){
         user = User()
+        notifications = ArrayList<String>()
+    }
+
+    fun addNotification(text : String){
+        this.notifications.add(text)
+    }
+
+    fun getNotifications() : ArrayList<String>{
+        return this.notifications
     }
 
 }

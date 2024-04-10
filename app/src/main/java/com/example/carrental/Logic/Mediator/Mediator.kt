@@ -9,9 +9,12 @@ import com.example.carrental.Logic.ChainOfResponsability.QuestionHandler
 import com.example.carrental.Logic.ChainOfResponsability.QuestionOne
 import com.example.carrental.Logic.ChainOfResponsability.QuestionThree
 import com.example.carrental.Logic.ChainOfResponsability.QuestionTwo
+import com.example.carrental.Logic.Observer.DatabaseSubject
+import com.example.carrental.Logic.Observer.UserObserver
+import com.example.carrental.Logic.proxy.PaymentProxy
+import com.example.carrental.Logic.proxy.PaymentServiceConcrete
 import com.example.carrental.Logic.Singleton.Session
-import com.example.carrental.Logic.Proxy.PaymentProxy
-import com.example.carrental.Logic.Proxy.PaymentServiceConcrete
+import com.example.carrental.UI.Adapters.NotificationAdapter
 import com.example.carrental.UI.FilterCar
 import com.example.carrental.UI.ForgotPassword
 import com.example.carrental.UI.Garage
@@ -22,6 +25,7 @@ import com.example.carrental.UI.MessageListing
 import com.example.carrental.UI.NewCar
 import com.example.carrental.UI.NewPassword
 import com.example.carrental.UI.NewUser
+import com.example.carrental.UI.Notifications
 import com.example.carrental.UI.People
 import com.example.carrental.UI.UpdateCar
 import com.example.carrental.database.CarTable
@@ -41,8 +45,11 @@ object Mediator {
     //indicates if the questions were answered wrong
     private var passwordFlag : Boolean = false
     private var filter : Car = Car()
+    private val sender = DatabaseSubject()
+    private val receiver = UserObserver()
 
     //this function handles the login button in Main
+    @RequiresApi(Build.VERSION_CODES.O)
     fun login(context : Context, username : String, password : String){
         val userTable = UserTable(context)
         val user = userTable.getByUsernamePassword(username, password)
@@ -60,10 +67,14 @@ object Mediator {
         var session = Session.getInstance()
         session.startSession(user)
 
+        //Check for updates from the observer and add notifications to the session
+        sender.registerObserver(receiver)
+        sender.searchDatabaseForUpdates(context, user.id!!)
+
         menu(context)
     }
 
-    fun menu(context: Context){
+    private fun menu(context: Context){
         val intent = Intent(context, Menu::class.java)
         context.startActivity(intent)
 
@@ -380,12 +391,24 @@ object Mediator {
         return result
     }
 
+    fun notifications(context: Context){
+        val intent = Intent(context, Notifications::class.java)
+        previousState = "menu"
+        context.startActivity(intent)
+    }
+
+    fun resetSession(){
+        val session = Session.getInstance()
+        session.endSession()
+    }
+
     //this function handles the revert button
     fun back(context : Context){
 
         if (this.previousState == "main"){
             val intent = Intent(context, MainActivity::class.java)
             context.startActivity(intent)
+            sender.unregisterObserver(receiver)
         }else if (this.previousState == "menu"){
             val intent = Intent(context, Menu::class.java)
             context.startActivity(intent)

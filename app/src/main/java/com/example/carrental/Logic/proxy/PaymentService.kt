@@ -1,4 +1,4 @@
-package com.example.carrental.Logic.Proxy
+package com.example.carrental.Logic.proxy
 
 import com.example.carrental.database.model.Car
 

@@ -13,6 +13,9 @@
         android:theme="@style/Theme.CarRental"
         tools:targetApi="31">
         <activity
+            android:name=".UI.Notifications"
+            android:exported="false" />
+        <activity
             android:name=".UI.MessageListing"
             android:exported="false" />
         <activity

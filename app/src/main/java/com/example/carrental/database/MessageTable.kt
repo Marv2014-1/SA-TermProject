@@ -7,20 +7,19 @@ import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import com.example.carrental.database.model.Message
-import com.example.carrental.database.model.Rental
 
 class MessageTable (private val context: Context) : DataFunctions <Long , Message>{
 
     companion object{
         private val MESSAGE_TABLE_NAME = "messages"
-        private val MESSAGE_TABLE_ID = "id"
-        private val MESSAGE_TABLE_SENDER = "sender"
-        private val MESSAGE_TABLE_RECEIVER = "receiver"
-        private val MESSAGE_TABLE_TEXT = "text"
-        private val MESSAGE_TABLE_TIME = "time"
+        private val MESSAGE_COLUMN_ID = "id"
+        private val MESSAGE_COLUMN_SENDER = "sender"
+        private val MESSAGE_COLUMN_RECEIVER = "receiver"
+        private val MESSAGE_COLUMN_TEXT = "text"
+        private val MESSAGE_COLUMN_TIME = "time"
+        private val MESSAGE_COLUMN_SEEN = "seen"
 
     }
 
@@ -33,9 +32,9 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
     fun getCurrentConvo(userId: Long, targetId: Long) : ArrayList<Message>{
         val database = DbHelper.getInstance(context)
         val selectQuery = "SELECT * FROM $MESSAGE_TABLE_NAME WHERE " +
-                " ($MESSAGE_TABLE_SENDER = \"$userId\" AND $MESSAGE_TABLE_RECEIVER = \"$targetId\") " +
-                " OR ($MESSAGE_TABLE_SENDER = \"$targetId\" AND $MESSAGE_TABLE_RECEIVER = \"$userId\") " +
-                "ORDER BY $MESSAGE_TABLE_TIME DESC"
+                " ($MESSAGE_COLUMN_SENDER = \"$userId\" AND $MESSAGE_COLUMN_RECEIVER = \"$targetId\") " +
+                " OR ($MESSAGE_COLUMN_SENDER = \"$targetId\" AND $MESSAGE_COLUMN_RECEIVER = \"$userId\") " +
+                "ORDER BY $MESSAGE_COLUMN_TIME DESC"
 
         val db : SQLiteDatabase = database.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)
@@ -44,16 +43,55 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         if (cursor != null) {
             if (cursor.moveToFirst()) {
                 do {
-                    var id = cursor.getLong(cursor.getColumnIndex(MESSAGE_TABLE_ID))
-                    var sender = cursor.getLong(cursor.getColumnIndex(MESSAGE_TABLE_SENDER))
-                    var receiver = cursor.getLong(cursor.getColumnIndex(MESSAGE_TABLE_RECEIVER))
-                    var text = cursor.getString(cursor.getColumnIndex(MESSAGE_TABLE_TEXT))
-                    var time = cursor.getString(cursor.getColumnIndex(MESSAGE_TABLE_TIME))
+                    var id = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_ID))
+                    var sender = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_SENDER))
+                    var receiver = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_RECEIVER))
+                    var text = cursor.getString(cursor.getColumnIndex(MESSAGE_COLUMN_TEXT))
+                    var time = cursor.getString(cursor.getColumnIndex(MESSAGE_COLUMN_TIME))
 
                     var message = Message(id,text,sender,receiver,time)
 
                     messages.add(message)
 
+
+                }while (cursor.moveToNext())
+            }
+        }
+
+        cursor.close()
+        database.close()
+        return messages
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @SuppressLint("Range")
+    fun getNotSeen(userId: Long) : ArrayList<Message?>{
+        val database = DbHelper.getInstance(context)
+        val bollText = false.toString()
+
+        val selectQuery = "SELECT * FROM $MESSAGE_TABLE_NAME WHERE " +
+                " ($MESSAGE_COLUMN_RECEIVER = \"$userId\" AND $MESSAGE_COLUMN_SEEN = \"$bollText\") " +
+                "ORDER BY $MESSAGE_COLUMN_TIME DESC"
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+        var messages : ArrayList<Message?> = ArrayList()
+
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                do {
+                    var id = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_ID))
+                    var sender = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_SENDER))
+                    var receiver = cursor.getLong(cursor.getColumnIndex(MESSAGE_COLUMN_RECEIVER))
+                    var text = cursor.getString(cursor.getColumnIndex(MESSAGE_COLUMN_TEXT))
+                    var time = cursor.getString(cursor.getColumnIndex(MESSAGE_COLUMN_TIME))
+
+                    var message = Message(id,text,sender,receiver,time)
+                    message.seen = true
+
+                    update(message)
+
+                    messages.add(message)
 
                 }while (cursor.moveToNext())
             }
@@ -94,8 +132,13 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         TODO("Not yet implemented")
     }
 
-    override fun update(t: Message) {
-        TODO("Not yet implemented")
+    override fun update(message: Message) {
+        val database = DbHelper.getInstance(context)
+        val db : SQLiteDatabase = database.writableDatabase
+        val updateQuery = "UPDATE $MESSAGE_TABLE_NAME SET $MESSAGE_COLUMN_SEEN = \"${message.seen.toString()}\" WHERE $MESSAGE_COLUMN_ID = \"${message.id}\""
+
+        db.execSQL(updateQuery)
+        database.close()
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -107,12 +150,11 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
             database.writableDatabase.use { db ->
                 val content = ContentValues()
 
-                content.put(MESSAGE_TABLE_SENDER, message.senderId)
-                content.put(MESSAGE_TABLE_RECEIVER, message.receiverId)
-                content.put(MESSAGE_TABLE_TEXT, message.text)
-                content.put(MESSAGE_TABLE_TIME, message.timestamp)
-
-
+                content.put(MESSAGE_COLUMN_SENDER, message.senderId)
+                content.put(MESSAGE_COLUMN_RECEIVER, message.receiverId)
+                content.put(MESSAGE_COLUMN_TEXT, message.text)
+                content.put(MESSAGE_COLUMN_TIME, message.timestamp)
+                content.put(MESSAGE_COLUMN_SEEN, message.seen.toString())
 
                 id = db.insert(MESSAGE_TABLE_NAME, null, content)
 

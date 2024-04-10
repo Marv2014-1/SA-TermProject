@@ -28,6 +28,13 @@ class Review {
         this.score = score
     }
 
+    constructor(id : Long, reviewer : Long, target : Long, score : Double){
+        this.id = id
+        this.reviewer = reviewer
+        this.target = target
+        this.score = score
+    }
+
     fun setScore(score: Double){
         var points = score
         if (points > 5){

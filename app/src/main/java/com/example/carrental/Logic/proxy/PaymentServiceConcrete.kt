@@ -1,4 +1,4 @@
-package com.example.carrental.Logic.Proxy
+package com.example.carrental.Logic.proxy
 
 import android.content.Context
 import android.os.Build

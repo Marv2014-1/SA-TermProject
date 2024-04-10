@@ -10,6 +10,7 @@ import android.content.Context
 import android.database.DatabaseUtils
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteException
+import android.util.Log
 import com.example.carrental.database.model.Review
 import com.example.carrental.database.model.User
 
@@ -22,6 +23,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         private val REVIEW_COLUMN_TARGET = "target"
         private val REVIEW_COLUMN_CONTENT = "content"
         private val REVIEW_COLUMN_SCORE = "score"
+        private val REVIEW_COLUMN_SEEN = "seen"
     }
 
     @SuppressLint("Range")
@@ -84,8 +86,13 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         TODO("Not yet implemented")
     }
 
-    override fun update(t: Review) {
-        TODO("Not yet implemented")
+    override fun update(review: Review) {
+        val database = DbHelper.getInstance(context)
+        val db : SQLiteDatabase = database.writableDatabase
+        val updateQuery = "UPDATE $REVIEW_TABLE_NAME SET $REVIEW_COLUMN_SEEN = \"${review.seen.toString()}\" WHERE $REVIEW_COLUMN_ID = \"${review.id}\""
+
+        db.execSQL(updateQuery)
+        database.close()
     }
 
     override fun insert(review: Review): Long? {
@@ -100,6 +107,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
                 content.put(REVIEW_COLUMN_TARGET, review.target)
 //                content.put(REVIEW_COLUMN_CONTENT, review.content)
                 content.put(REVIEW_COLUMN_SCORE, review.score)
+                content.put(REVIEW_COLUMN_SEEN, review.seen.toString())
 
                 id = db.insertOrThrow(REVIEW_TABLE_NAME, null, content)
 
@@ -143,6 +151,46 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         database.close()
         cursor.close()
         return review
+    }
+
+    @SuppressLint("Range")
+    fun getNotSeen(userId: Long) : ArrayList<Review?>{
+        val database= DbHelper.getInstance(context)
+        val bollText = false.toString()
+        val selectQuery = "SELECT * FROM $REVIEW_TABLE_NAME WHERE" +
+                " ( $REVIEW_COLUMN_TARGET = \"$userId\" AND $REVIEW_COLUMN_SEEN = \"$bollText\") "
+
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        Log.e("cursor" , cursor.count.toString())
+
+        val reviews = ArrayList<Review?>()
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do {
+                    val id = cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_ID))
+                    val reviewer = cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_ID))
+                    val target = cursor.getLong(cursor.getColumnIndex(REVIEW_COLUMN_REVIEWER))
+//                    val content = cursor.getString(cursor.getColumnIndex(REVIEW_COLUMN_CONTENT))
+                    val score = cursor.getDouble(cursor.getColumnIndex(REVIEW_COLUMN_SCORE))
+
+                    var review : Review? = Review(id, reviewer, target, score)
+                    review?.seen = true
+
+                    if (review != null) {
+                        update(review)
+                    }
+
+                    reviews.add(review)
+                } while (cursor.moveToNext())
+
+            }
+        }
+
+        database.close()
+        cursor.close()
+        return reviews
     }
 
 }
