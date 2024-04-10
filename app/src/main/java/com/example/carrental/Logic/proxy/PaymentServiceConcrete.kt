@@ -1,5 +1,9 @@
 package com.example.carrental.Logic.proxy
 
+/**
+ * this is the concrete payment class
+ */
+
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -13,6 +17,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 
 class PaymentServiceConcrete(private val context: Context) : PaymentService {
+    // Will make a call to the database once it is ensured that the user has the funds
     @RequiresApi(Build.VERSION_CODES.O)
     override fun processPayment(target: Long, car: Car) {
         val session = Session.getInstance()

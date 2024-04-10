@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to control the menu
+ */
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -50,6 +54,7 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
         }
     }
 
+    // sets up the recycle view adapter and passes the array to be used
     private fun setUpAdapter(){
         newArrayList = Mediator.getOthersCars(this)
 
@@ -61,6 +66,7 @@ class Menu : AppCompatActivity() , MenuAdapter.OnButtonClickListener{
         newRecyclerView.adapter = adapter
     }
 
+    // adds button functionality to recyclerview buttons
     override fun onButtonClick(position: Int, buttonId: Int) {
         if (R.id.menuCarRentButton == buttonId){
             Mediator.rentCar(this, newArrayList.get(position).owner, newArrayList.get(position))

@@ -4,6 +4,7 @@ import com.example.carrental.Logic.Mediator.Mediator
 import com.example.carrental.database.model.User
 
 class QuestionThree : QuestionHandler()  {
+    //check if question three matches
     override fun handleRequest(user: User, Q1: String, Q2: String, Q3: String) {
         if (user.Q3 == Q3){
             return

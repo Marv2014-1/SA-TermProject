@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to viw and manage their cars
+ */
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +39,7 @@ class Garage : AppCompatActivity(), GarageAdapter.OnButtonClickListener {
         }
     }
 
+    // sets up the recycle view adapter and passes the array to be used
     private fun setUpAdapter(){
         newArrayList = Mediator.getUserCars(this)
 
@@ -46,6 +51,7 @@ class Garage : AppCompatActivity(), GarageAdapter.OnButtonClickListener {
         newRecyclerView.adapter = adapter
     }
 
+    // adds button functionality to recyclerview buttons
     override fun onButtonClick(position: Int, buttonId: Int) {
         if (R.id.garageDeleteCar == buttonId){
             val carId = newArrayList.get(position).id

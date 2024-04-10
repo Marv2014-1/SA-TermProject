@@ -1,5 +1,9 @@
 package com.example.carrental.UI.Adapters
 
+/**
+ * This class acts as an adapter to the menu recycler view
+ */
+
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,19 +15,23 @@ import com.example.carrental.database.model.Car
 
 class MenuAdapter (private val carList: ArrayList<Car>, private val listener: MenuAdapter.OnButtonClickListener) : RecyclerView.Adapter<MenuAdapter.MyViewHolder>(){
 
+    //Define button click functionality
     interface OnButtonClickListener{
         fun onButtonClick(position: Int, buttonId: Int)
     }
 
+    //Define items as they appear in the context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MenuAdapter.MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.menu_car, parent, false )
         return MenuAdapter.MyViewHolder(itemView, listener)
     }
 
+    //Define how many items there are
     override fun getItemCount(): Int {
         return carList.size
     }
 
+    //Set updated text text
     override fun onBindViewHolder(holder: MenuAdapter.MyViewHolder, position: Int) {
         val currentItem = carList[position]
         holder.model.text = currentItem.model
@@ -35,6 +43,7 @@ class MenuAdapter (private val carList: ArrayList<Car>, private val listener: Me
         holder.owner.text = currentItem.ownerUsername
     }
 
+    //Bind items to named variables for access
     class MyViewHolder(itemView : View, listener: MenuAdapter.OnButtonClickListener) : RecyclerView.ViewHolder(itemView){
         val model : TextView = itemView.findViewById(R.id.menuCarModel)
         val year : TextView = itemView.findViewById(R.id.menuCarYear)

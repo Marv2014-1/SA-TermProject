@@ -27,6 +27,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         TODO("Not yet implemented")
     }
 
+    // return all the elements of the current conversation
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("Range")
     fun getCurrentConvo(userId: Long, targetId: Long) : ArrayList<Message>{
@@ -63,6 +64,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         return messages
     }
 
+    //if a message has not been seen, it will be fetched
     @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("Range")
     fun getNotSeen(userId: Long) : ArrayList<Message?>{
@@ -102,6 +104,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         return messages
     }
 
+    //delete all entries
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -118,6 +121,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         return deletedAll
     }
 
+    // count how many items are in the table
     fun getCount(): Long{
         val appDbHelper = DbHelper.getInstance(context)
         val db = appDbHelper.writableDatabase
@@ -132,6 +136,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         TODO("Not yet implemented")
     }
 
+    // update a message given a message
     override fun update(message: Message) {
         val database = DbHelper.getInstance(context)
         val db : SQLiteDatabase = database.writableDatabase
@@ -141,6 +146,7 @@ class MessageTable (private val context: Context) : DataFunctions <Long , Messag
         database.close()
     }
 
+    // insert a message given a message
     @RequiresApi(Build.VERSION_CODES.O)
     override fun insert(message: Message): Long? {
         var id: Long = -1

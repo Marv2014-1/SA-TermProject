@@ -1,5 +1,9 @@
 package com.example.carrental.database.model
 
+/**
+ * this class models the message and it's variables as seen on the message table
+ */
+
 import android.os.Build
 import android.os.OutcomeReceiver
 import androidx.annotation.RequiresApi

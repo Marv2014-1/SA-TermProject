@@ -34,12 +34,14 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         TODO("Not yet implemented")
     }
 
+    // count how many items are in the table
     fun getCount(): Long{
         val appDbHelper = DbHelper.getInstance(context)
         val db = appDbHelper.writableDatabase
         return DatabaseUtils.queryNumEntries(db, CAR_TABLE_NAME)
     }
 
+    // get a car by its owner given the id
     @SuppressLint("Range")
     fun getByOwner(user : User) : ArrayList<Car>{
         val database = DbHelper.getInstance(context)
@@ -79,11 +81,13 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return cars
     }
 
+    //get the car of all other people
     @SuppressLint("Range")
     fun getOthers(user: User, car: Car) : ArrayList<Car>{
         val database = DbHelper.getInstance(context)
         var selectQuery = "SELECT * FROM $CAR_TABLE_NAME WHERE $CAR_COLUMN_OWNER != \"${user.id}\" "
 
+        //check for filter settings if the user has chosen to add any
         if (car.model != ""){
             selectQuery += "AND $CAR_COLUMN_MODEL = \"${car.model}\" "
         }
@@ -103,7 +107,9 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         if (car.high != -1){
             selectQuery += "AND $CAR_COLUMN_PRICE < \"${car.high}\" "
         }
+        //end of filter settings
 
+        // start of database retrieval
         val db : SQLiteDatabase = database.writableDatabase
         val cursor = db.rawQuery(selectQuery, null)
 
@@ -140,6 +146,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return cars
     }
 
+    // find the owner given the car id
     fun findOwner(owner : Long) : String{
         val database = DbHelper.getInstance(context)
         val db = UserTable(context)
@@ -150,6 +157,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return user.username!!
     }
 
+    // delete all entries
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -166,6 +174,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return deletedAll
     }
 
+    //delete a car by it's id
     override fun deleteById(id: Long): Int {
         val database= DbHelper.getInstance(context)
         val db = database.writableDatabase
@@ -179,6 +188,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         TODO("Not yet implemented")
     }
 
+    // update a car given a car
     override fun update(car: Car) {
         val database = DbHelper.getInstance(context)
         val db : SQLiteDatabase = database.writableDatabase
@@ -198,6 +208,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         database.close()
     }
 
+    // input a car into the database
     override fun insert(car: Car): Long? {
         var id: Long = -1
         val database= DbHelper.getInstance(context)
@@ -228,6 +239,7 @@ class CarTable(private val context: Context) : DataFunctions <Long , Car> {
         return id
     }
 
+    // get a car by it's id
     @SuppressLint("Range")
     override fun getByID(id: Long): Car? {
         val database = DbHelper.getInstance(context)

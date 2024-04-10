@@ -55,6 +55,37 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         return users
     }
 
+    //Get all users except for the one id provided
+    @SuppressLint("Range")
+    fun getALLOthers(userId: Long): ArrayList<User> {
+        val database= DbHelper.getInstance(context)
+        val selectQuery = "SELECT * FROM $USER_TABLE_NAME WHERE $USER_COLUMN_ID != $userId"
+        val db : SQLiteDatabase = database.writableDatabase
+        val cursor = db.rawQuery(selectQuery, null)
+
+        val users = ArrayList<User>()
+        if (cursor != null){
+            if (cursor.moveToFirst()){
+                do {
+                    val id = cursor.getLong(cursor.getColumnIndex(USER_COLUMN_ID))
+                    val username = cursor.getString(cursor.getColumnIndex(USER_COLUMN_USERNAME))
+                    val password = cursor.getString(cursor.getColumnIndex(USER_COLUMN_PASSWORD))
+                    val Q1 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q1))
+                    val Q2 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q2))
+                    val Q3 = cursor.getString(cursor.getColumnIndex(USER_COLUMN_Q3))
+                    val balance = cursor.getLong(cursor.getColumnIndex(USER_COLUMN_BALANCE))
+
+                    var user = User(id, username, password, Q1, Q2, Q3, balance)
+                    users.add(user)
+                } while (cursor.moveToNext())
+            }
+        }
+
+        database.close()
+        cursor.close()
+        return users
+    }
+
     override fun update(user: User){
         val database = DbHelper.getInstance(context)
         val db : SQLiteDatabase = database.writableDatabase
@@ -73,6 +104,7 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         database.close()
     }
 
+    // count how many items are in the table
     fun getCount(): Long{
         val appDbHelper = DbHelper.getInstance(context)
         val db = appDbHelper.writableDatabase
@@ -89,6 +121,7 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         TODO("Not yet implemented")
     }
 
+    // delete all entries
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -133,6 +166,7 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         return id
     }
 
+    //get a user given an id
     @SuppressLint("Range")
     override fun getByID(id: Long): User {
         val database = DbHelper.getInstance(context)
@@ -167,7 +201,7 @@ class UserTable(private val context: Context) : DataFunctions <Long , User> {
         return User()
     }
 
-    // get a user given the username
+    // get a user given the username and password
      @SuppressLint("Range")
      fun getByUsernamePassword(username: String, password: String): User? {
         val database = DbHelper.getInstance(context)

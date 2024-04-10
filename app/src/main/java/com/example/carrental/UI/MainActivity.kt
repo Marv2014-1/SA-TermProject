@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to start the application
+ */
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.carrental.Logic.Mediator.Mediator
@@ -18,6 +22,7 @@ class MainActivity : AppCompatActivity(){
 //        val database = DbHelper.getInstance(this)
 //        database.deleteAll()
 
+        //warnings
         val extras = intent.extras
         if (extras != null){
             val value = extras.getString("state")

@@ -1,5 +1,9 @@
 package com.example.carrental.Logic.Observer
 
+/**
+ * this class is the subject that will be sending notifications to the users
+ */
+
 import android.content.Context
 import android.os.Build
 import android.util.Log
@@ -18,6 +22,7 @@ class DatabaseSubject {
     private lateinit var unseenRentals : ArrayList <Rental?>
     private lateinit var unseenReviews : ArrayList <Review?>
 
+    //search for updates within the databse
     @RequiresApi(Build.VERSION_CODES.O)
     fun searchDatabaseForUpdates(context: Context, userId : Long){
 
@@ -43,6 +48,7 @@ class DatabaseSubject {
             }
         }
 
+        //rental notifications not working
 //        if (!unseenRentals.isEmpty()){
 //            for (rental in unseenRentals){
 //                if (rental != null) {
@@ -76,15 +82,18 @@ class DatabaseSubject {
         }
     }
 
+    //register an observer to be messaged
     fun registerObserver(observer: DatabaseObserver) {
         observers.add(observer)
     }
 
+    //delete an observer
     fun unregisterObserver(observer: DatabaseObserver) {
         Mediator.resetSession()
         observers.remove(observer)
     }
 
+    //send messages to all
     private fun notifyObservers(item: String) {
         Log.e("Item", item)
         for (observer in observers) {

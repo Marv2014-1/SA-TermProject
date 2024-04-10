@@ -1,5 +1,9 @@
 package com.example.carrental.UI.Adapters
 
+/**
+ * This class acts as an adapter to the rental history recycler view
+ */
+
 import android.content.Context
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,15 +19,23 @@ import com.example.carrental.database.model.Rental
 
 class HistoryAdapter(private val context : Context ,private val rentalList: ArrayList<Rental>, private val listener: HistoryAdapter.OnButtonClickListener) : RecyclerView.Adapter<HistoryAdapter.MyViewHolder>() {
 
+    //Define button click functionality
     interface OnButtonClickListener{
         fun onButtonClick(position: Int, buttonId: Int)
     }
 
+    //Define items as they appear in the context
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HistoryAdapter.MyViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.history_rental, parent, false )
         return HistoryAdapter.MyViewHolder(itemView, listener)
     }
 
+    //Define how many items there are
+    override fun getItemCount(): Int {
+        return rentalList.size
+    }
+
+    //Set updated text text
     override fun onBindViewHolder(holder: HistoryAdapter.MyViewHolder, position: Int) {
         val currentItem = rentalList[position]
         holder.owner.text = Mediator.getUserName(context , currentItem.owner!!)
@@ -36,10 +48,7 @@ class HistoryAdapter(private val context : Context ,private val rentalList: Arra
         holder.price.text = currentItem.price.toString()
     }
 
-    override fun getItemCount(): Int {
-        return rentalList.size
-    }
-
+    //Bind items to named variables for access
     class MyViewHolder(itemView : View, listener: HistoryAdapter.OnButtonClickListener) : RecyclerView.ViewHolder(itemView){
         val owner : TextView = itemView.findViewById(R.id.historyOwner)
         val model : TextView = itemView.findViewById(R.id.historyCar)

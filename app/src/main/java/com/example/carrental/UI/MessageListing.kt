@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to send messages
+ */
+
 import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -41,6 +45,7 @@ class MessageListing : AppCompatActivity(), MessageAdapter.OnButtonClickListener
         }
     }
 
+    // sets up the recycle view adapter and passes the array to be used
     @RequiresApi(Build.VERSION_CODES.O)
     private fun setUpAdapter(context: Context){
         newArrayList = Mediator.getMessages(context, target)
@@ -54,6 +59,7 @@ class MessageListing : AppCompatActivity(), MessageAdapter.OnButtonClickListener
         newRecyclerView.adapter = adapter
     }
 
+    //this is a comparator to list the messages in order
     class TimeComparator : Comparator<Message> {
         @RequiresApi(Build.VERSION_CODES.O)
         override fun compare(time1: Message, time2: Message): Int {
@@ -68,6 +74,7 @@ class MessageListing : AppCompatActivity(), MessageAdapter.OnButtonClickListener
         }
     }
 
+    // adds button functionality to recyclerview buttons
     override fun onButtonClick(position: Int, buttonId: Int) {
         TODO("Not yet implemented")
     }

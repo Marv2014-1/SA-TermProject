@@ -1,5 +1,9 @@
 package com.example.carrental.Logic.Mediator
 
+/**
+ * This is the Mediator class and it handles logic between the UI elements and the database
+ */
+
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -48,7 +52,7 @@ object Mediator {
     private val sender = DatabaseSubject()
     private val receiver = UserObserver()
 
-    //this function handles the login button in Main
+    //this function handles the login button in Main and starts the session
     @RequiresApi(Build.VERSION_CODES.O)
     fun login(context : Context, username : String, password : String){
         val userTable = UserTable(context)
@@ -74,6 +78,7 @@ object Mediator {
         menu(context)
     }
 
+    //Switch to the menu seen
     private fun menu(context: Context){
         val intent = Intent(context, Menu::class.java)
         context.startActivity(intent)
@@ -81,26 +86,38 @@ object Mediator {
         previousState = "main"
     }
 
+    //Retrieve the balance of the current user
     fun getUserBalance() : Long{
         val session = Session.getInstance()
         return session.getUser().balance!!
     }
 
+    //Retrieve the name of the given user id
     fun getUserName(context: Context ,id : Long) : String{
         var userTable = UserTable(context)
         return userTable.getByID(id).username.toString()
     }
 
+    //Get all the users
     fun getUsers(context: Context) : ArrayList<User>{
         val db = UserTable(context)
         return db.getALL()
     }
 
+    //Get all users except for the one currently logged in
+    fun getAllOtherUers(context: Context) : ArrayList<User>{
+        val user = Session.getInstance().getUser()
+        val db = UserTable(context)
+        return db.getALLOthers(user.id!!)
+    }
+
+    //Get the car model of the given ID
     fun getCarModel(context: Context ,id : Long) : String{
         var carTable = CarTable(context)
         return carTable.getByID(id)?.model.toString()
     }
 
+    //Get the score of the given user id
     fun getScore(context: Context, id : Long) : String?{
         val reviewTable = ReviewTable(context)
         val review =  reviewTable.getByID(id)
@@ -204,6 +221,7 @@ object Mediator {
         return carTable.getByOwner(user)
     }
 
+    // return the cars of all users except for mine
     fun getOthersCars(context: Context) : ArrayList<Car> {
         val carTable = CarTable(context)
         var session = Session.getInstance()
@@ -211,6 +229,7 @@ object Mediator {
         return carTable.getOthers(user, filter)
     }
 
+    // change to the garage view
     fun getCar(context: Context, id : Long) : Car{
         val carTable = CarTable(context)
         val car : Car = carTable.getByID(id)!!
@@ -245,6 +264,7 @@ object Mediator {
         garage(context)
     }
 
+    // delete a listed car
     fun deleteCar(context: Context, id : Long){
         val cartable = CarTable(context)
         cartable.deleteById(id)
@@ -252,6 +272,7 @@ object Mediator {
         garage(context)
     }
 
+    // edit a listed car
     fun editCar(context: Context, id : Long){
         val intent = Intent(context, UpdateCar::class.java)
         intent.putExtra("ID", id)
@@ -259,6 +280,7 @@ object Mediator {
         previousState = "garage"
     }
 
+    // update the listed car that is being edited
     fun updateCarContent(context: Context, id : Long,  model : String, year : String, mileage : Int, availability : String, location : String, price : Int){
         val builder = CarBuilder()
         builder.setId(id)
@@ -282,6 +304,7 @@ object Mediator {
 
     private var moneyFlag = true
 
+    // rent a car that is listed
     fun rentCar(context: Context, target : Long, car : Car){
         val paymentProxy : PaymentProxy = PaymentProxy(context, PaymentServiceConcrete(context))
 
@@ -295,10 +318,12 @@ object Mediator {
         context.startActivity(intent)
     }
 
+    // checks to see if the user has the funds
     fun hasMoney(boolean: Boolean){
         moneyFlag = boolean
     }
 
+    // change to the history view
     fun history(context: Context){
         val intent = Intent(context, History::class.java)
         context.startActivity(intent)
@@ -306,6 +331,7 @@ object Mediator {
         previousState = "menu"
     }
 
+    // write to the history table once clicked
     fun setHistory(context: Context): ArrayList<Rental> {
         val session = Session.getInstance()
         val user = session.getUser()
@@ -322,6 +348,7 @@ object Mediator {
         previousState = "menu"
     }
 
+    // Change to the review view
     fun reviewPage(context: Context, target: Long){
         val intent = Intent(context, com.example.carrental.UI.Review::class.java)
         intent.putExtra("target", target.toString())
@@ -329,6 +356,7 @@ object Mediator {
         previousState = "people"
     }
 
+    // upload a review to a specific target and pass their score (5 max)
     fun review(context: Context, target: Long, score : Double){
         val session = Session.getInstance()
         val user = session.getUser()
@@ -342,6 +370,8 @@ object Mediator {
 
         people(context)
     }
+
+    // switch to the car filter view
     fun filter(context: Context){
         val intent = Intent(context, FilterCar::class.java)
         context.startActivity(intent)
@@ -349,6 +379,7 @@ object Mediator {
         previousState = "menu"
     }
 
+    // set the current filter to the given values
     fun setFilter(context: Context, model : String, availability: String, location: String, low: Int, high: Int){
         filter.model = model
         filter.availability = availability
@@ -361,6 +392,7 @@ object Mediator {
         menu(context)
     }
 
+    // change to the message view
     fun message(context: Context , target: Long){
         val intent = Intent(context, MessageListing::class.java)
         intent.putExtra("Id" , target)
@@ -369,6 +401,7 @@ object Mediator {
         previousState = "people"
     }
 
+    // send a message to the user selected
     @RequiresApi(Build.VERSION_CODES.O)
     fun sendMessage(context: Context, target: Long, text : String){
         val messageTable = MessageTable(context)
@@ -382,6 +415,7 @@ object Mediator {
         message(context, target)
     }
 
+    // get the chat between two users
     @RequiresApi(Build.VERSION_CODES.O)
     fun getMessages(context: Context, targetId : Long) : ArrayList<Message>{
         val messageTable = MessageTable(context)
@@ -391,12 +425,14 @@ object Mediator {
         return result
     }
 
+    // change to the notification view
     fun notifications(context: Context){
         val intent = Intent(context, Notifications::class.java)
         previousState = "menu"
         context.startActivity(intent)
     }
 
+    // end user session
     fun resetSession(){
         val session = Session.getInstance()
         session.endSession()

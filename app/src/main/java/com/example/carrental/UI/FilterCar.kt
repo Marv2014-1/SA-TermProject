@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to filter a car based on their input
+ */
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.carrental.Logic.Mediator.Mediator

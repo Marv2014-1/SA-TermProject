@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to viw rental history
+ */
+
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -30,6 +34,7 @@ class History : AppCompatActivity(), HistoryAdapter.OnButtonClickListener {
         }
     }
 
+    // sets up the recycle view adapter and passes the array to be used
     private fun setUpAdapter(context: Context){
         newArrayList = Mediator.setHistory(context)
 
@@ -41,6 +46,7 @@ class History : AppCompatActivity(), HistoryAdapter.OnButtonClickListener {
         newRecyclerView.adapter = adapter
     }
 
+    // adds button functionality to recyclerview buttons
     override fun onButtonClick(position: Int, buttonId: Int) {
         TODO("Not yet implemented")
     }

@@ -1,5 +1,9 @@
 package com.example.carrental.Logic.Builder
 
+/**
+ * this is the car builder interface
+ */
+
 interface Builder {
     fun setId(id : Long)
     fun setOwner(owner : Long)

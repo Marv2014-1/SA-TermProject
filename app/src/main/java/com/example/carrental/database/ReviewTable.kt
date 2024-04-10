@@ -26,6 +26,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         private val REVIEW_COLUMN_SEEN = "seen"
     }
 
+    // get all reviews
     @SuppressLint("Range")
     override fun getALL(): List<Review> {
         val database= DbHelper.getInstance(context)
@@ -56,12 +57,14 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         return emptyList()
     }
 
+    // count how many items are in the table
     fun getCount(): Long{
         val appDbHelper = DbHelper.getInstance(context)
         val db = appDbHelper.writableDatabase
         return DatabaseUtils.queryNumEntries(db, REVIEW_TABLE_NAME)
     }
 
+    //delete all entries
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -86,6 +89,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         TODO("Not yet implemented")
     }
 
+    // update a review given a review
     override fun update(review: Review) {
         val database = DbHelper.getInstance(context)
         val db : SQLiteDatabase = database.writableDatabase
@@ -95,6 +99,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         database.close()
     }
 
+    // insert a review given a review
     override fun insert(review: Review): Long? {
         var id: Long = -1
         val database= DbHelper.getInstance(context)
@@ -121,6 +126,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         return id
     }
 
+    // get a review by the given id
     @SuppressLint("Range")
     override fun getByID(id: Long): Review? {
         val database = DbHelper.getInstance(context)
@@ -153,6 +159,7 @@ class ReviewTable(private val context: Context) : DataFunctions <Long , Review> 
         return review
     }
 
+    // if a review has not been seen it will be returned
     @SuppressLint("Range")
     fun getNotSeen(userId: Long) : ArrayList<Review?>{
         val database= DbHelper.getInstance(context)

@@ -162,12 +162,14 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
         return rentals
     }
 
+    // count how many items are in the table
     fun getCount(): Long{
         val appDbHelper = DbHelper.getInstance(context)
         val db = appDbHelper.writableDatabase
         return DatabaseUtils.queryNumEntries(db, RENTAL_TABLE_NAME)
     }
 
+    // delete all entries
     override fun deleteAll(): Boolean {
         val database= DbHelper.getInstance(context)
         var deletedAll = false
@@ -192,6 +194,7 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
         TODO("Not yet implemented")
     }
 
+    //updatea  rental given a rental
      fun update(rental: Rental, userId: Long) {
         val database = DbHelper.getInstance(context)
         val db : SQLiteDatabase = database.writableDatabase
@@ -210,6 +213,7 @@ class RentalTable(private val context: Context) : DataFunctions <Long , Rental> 
         database.close()
     }
 
+    //insert a rental given a rental
     override fun insert(rental: Rental): Long? {
         var id: Long = -1
         val database= DbHelper.getInstance(context)

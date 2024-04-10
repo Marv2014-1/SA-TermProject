@@ -32,7 +32,7 @@ class People : AppCompatActivity(), PeopleAdapter.OnButtonClickListener {
     }
 
     private fun setUpAdapter(context : Context){
-        newArrayList = Mediator.getUsers(this)
+        newArrayList = Mediator.getAllOtherUers(this)
 
         newRecyclerView = binding.peopleList
         newRecyclerView.layoutManager = LinearLayoutManager(this)

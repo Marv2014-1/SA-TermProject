@@ -1,5 +1,9 @@
 package com.example.carrental.UI
 
+/**
+ * this class is a UI allows the user to edit a car
+ */
+
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -34,8 +38,6 @@ class UpdateCar : AppCompatActivity() {
             binding.updateCarLocation.setText(car.location)
 //            binding.updateCarPrice.setText(car.price)
         }
-
-
 
         binding.updateCarButton.setOnClickListener(){
             val model = binding.updateCarModel.text.toString()
